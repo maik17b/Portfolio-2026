@@ -215,6 +215,21 @@
                 transform: translate(-50%, 0);
             }
         }
+
+        /* Mobile: Bilder immer farbig anzeigen (kein Hover auf Touch) */
+        @media (max-width: 767px) {
+
+            .project-img,
+            .project-card .project-img {
+                filter: grayscale(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-img-mobile {
+                filter: grayscale(0) !important;
+                opacity: 1 !important;
+            }
+        }
     </style>
 </head>
 
@@ -287,7 +302,7 @@
                     <!-- Hero Image -->
                     <img src="Image-Hero/Gemini_Generated_Image_yf2j9vyf2j9vyf2j.png"
                         alt="Porträt von Maik Becker in bläulicher Beleuchtung"
-                        class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        class="hero-img-mobile w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"
                         aria-hidden="true"></div>
                     <div class="absolute inset-0 border border-white/10 rounded-2xl pointer-events-none"
@@ -323,16 +338,16 @@
         </div>
 
         <!-- WORK / SHOWCASE SECTION -->
-        <section id="work" class="py-32" aria-label="Meine Projekte">
+        <section id="work" class="py-24 md:py-32" aria-label="Meine Projekte">
             <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
-                <div class="reveal mb-20 flex justify-between items-end">
+                <div class="reveal mb-12 md:mb-20 flex justify-between items-end">
                     <h2 class="text-5xl md:text-7xl font-display font-bold">Ausgewählte<br>Projekte</h2>
                     <p class="text-gray-500 max-w-xs text-right hidden md:block">Eine Sammlung meiner besten Arbeiten
                         aus den Bereichen Webdesign und Künstliche Intelligenz.</p>
                 </div>
 
                 <!-- Asymmetrisches Grid (Projektkarten als Links) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
                     <!-- Projekt 1: Zimt & Zucker -->
                     <a href="#"
                         class="project-card block reveal anim-from-left md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl"
@@ -342,7 +357,7 @@
                                 alt="Startseite der Zimt und Zucker Website"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8 md:p-10">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">Zimt & Zucker</h3>
                             <p class="text-gray-300 text-sm max-w-md">Nostalgischer Charme. Frühstücken wie bei Oma –
                                 nur viel schöner.</p>
@@ -351,29 +366,31 @@
 
                     <!-- Projekt 2: Zimt & Zucker Detail -->
                     <a href="#"
-                        class="project-card block reveal anim-from-right md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
+                        class="project-card block reveal anim-from-right md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
                         aria-label="Projekt ansehen: Zimt & Liebe">
                         <div class="project-media-container">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.47.34.png"
                                 alt="Detailansicht der Zimt und Zucker Website mit gemütlichem Sessel"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                            <h3 class="text-2xl font-display font-bold text-white mb-1">Zimt & Liebe</h3>
-                            <p class="text-gray-300 text-xs">Ein gemütliches Wohnzimmer mitten in der Stadt.</p>
+                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
+                            <div class="p-6 md:p-8">
+                                <h3 class="text-2xl font-display font-bold text-white mb-1">Zimt & Liebe</h3>
+                                <p class="text-gray-400 text-xs">Ein gemütliches Wohnzimmer mitten in der Stadt.</p>
+                            </div>
                         </div>
                     </a>
 
                     <!-- Projekt 3: Juni Essentials -->
                     <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-10 md:col-start-2 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        class="project-card block reveal anim-blur-in md:col-span-10 md:col-start-2 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
                         aria-label="Projekt ansehen: Juni Essentials">
                         <div class="project-media-container bg-[#1a1a1a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.51.40.png"
                                 alt="Startseite von Juni Essentials mit Kaffeebohnen"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-4xl font-display font-bold text-white mb-2">Juni Essentials</h3>
                             <p class="text-gray-300 text-sm max-w-md">Dein täglicher Antrieb. Markenidentität und
                                 Webdesign für moderne Kaffeekultur.</p>
@@ -382,29 +399,31 @@
 
                     <!-- Projekt 4: Juni Objects -->
                     <a href="#"
-                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-10"
+                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-8"
                         aria-label="Projekt ansehen: Juni Objects & Merch">
                         <div class="project-media-container bg-white">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.51.54.png"
                                 alt="Produktansicht von Juni Essentials Objekten"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                            <h3 class="text-2xl font-display font-bold text-white mb-1">Objects & Merch</h3>
-                            <p class="text-gray-300 text-xs">Kaffee • Drinks • Accessoires</p>
+                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
+                            <div class="p-6 md:p-8">
+                                <h3 class="text-2xl font-display font-bold text-white mb-1">Objects & Merch</h3>
+                                <p class="text-gray-400 text-xs">Kaffee • Drinks • Accessoires</p>
+                            </div>
                         </div>
                     </a>
 
                     <!-- Projekt 5: GreenNest Video -->
                     <a href="#"
-                        class="project-card block reveal anim-flip-up md:col-span-7 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
+                        class="project-card block reveal anim-flip-up md:col-span-7 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
                         aria-label="Videoprojekt ansehen: GreenNest Living">
                         <div class="project-media-container">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.13.26.mov" autoplay loop muted
                                 playsinline aria-label="Video Demonstration der GreenNest Website"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">GreenNest Living
                             </h3>
                             <p class="text-gray-300 text-sm max-w-md">Schön. Nachhaltig. Zuhause. Ästhetische und
@@ -414,14 +433,14 @@
 
                     <!-- Projekt 6: Nexus Horology -->
                     <a href="#"
-                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
                         aria-label="Projekt ansehen: Nexus Horology">
                         <div class="project-media-container">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.56.42.png"
                                 alt="Startseite von Nexus Horology im Dark Mode"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-3xl font-display font-bold text-white mb-2">Nexus Horology</h3>
                             <p class="text-gray-300 text-sm max-w-md">Höchste Präzision. Meisterhafte Restaurierung von
                                 mechanischen Uhren.</p>
@@ -430,14 +449,14 @@
 
                     <!-- Projekt 7: Nexus Detail -->
                     <a href="#"
-                        class="project-card block reveal anim-from-right md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32"
+                        class="project-card block reveal anim-from-right md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
                         aria-label="Projekt ansehen: Nexus Atelier">
                         <div class="project-media-container">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.56.49.png"
                                 alt="Detailansicht der Nexus Website mit edler Typografie"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-2xl font-display font-bold text-white mb-1">Nexus Atelier</h3>
                             <p class="text-gray-300 text-xs">Die Seele der Zeit bewahren – durch echte Handwerkskunst.
                             </p>
@@ -446,30 +465,32 @@
 
                     <!-- Projekt 8: Daily Ritual -->
                     <a href="#"
-                        class="project-card block reveal anim-from-left md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        class="project-card block reveal anim-from-left md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
                         aria-label="Projekt ansehen: Daily Ritual">
                         <div class="project-media-container bg-[#f4f7f4]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 12.09.26.png"
                                 alt="Startseite von Daily Ritual"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                            <h3 class="text-2xl font-display font-bold text-white mb-1">Daily Ritual</h3>
-                            <p class="text-gray-300 text-xs max-w-[200px]">Dein täglicher Kaffee. Einfach und
-                                unkompliziert.</p>
+                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
+                            <div class="p-6 md:p-8">
+                                <h3 class="text-2xl font-display font-bold text-white mb-1">Daily Ritual</h3>
+                                <p class="text-gray-400 text-xs max-w-[200px]">Dein täglicher Kaffee. Einfach und
+                                    unkompliziert.</p>
+                            </div>
                         </div>
                     </a>
 
                     <!-- Projekt 9: Klangerfinder Video -->
                     <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-20"
+                        class="project-card block reveal anim-blur-in md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
                         aria-label="Videoprojekt ansehen: Klangerfinder">
                         <div class="project-media-container bg-[#111]">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.53.27.mov" autoplay loop muted
                                 playsinline aria-label="Video Demonstration der Klangerfinder Website"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-4xl font-display font-bold text-white mb-2">Klangerfinder</h3>
                             <p class="text-gray-300 text-sm max-w-md">Wir machen Marken hörbar. Die perfekte Mischung
                                 aus Kunst, Psychologie und Technologie.</p>
@@ -478,14 +499,14 @@
 
                     <!-- Projekt 10: Silent Luxury -->
                     <a href="#"
-                        class="project-card block reveal anim-flip-up md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        class="project-card block reveal anim-flip-up md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
                         aria-label="Projekt ansehen: Silent Luxury">
                         <div class="project-media-container bg-[#fcfbf9]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 12.16.03.png"
                                 alt="Mode-Website Silent Luxury mit Buch-Ästhetik"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-3xl font-display font-bold text-white mb-2">Silent Luxury</h3>
                             <p class="text-gray-300 text-sm max-w-sm">Hochwertige Mode für deinen Alltag. Die Frühjahr /
                                 Sommer Kollektion.</p>
@@ -494,14 +515,14 @@
 
                     <!-- Projekt 11: Apex Customs Video -->
                     <a href="#"
-                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32"
+                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
                         aria-label="Videoprojekt ansehen: Apex Customs">
                         <div class="project-media-container bg-black">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.57.55.mov" autoplay loop muted
                                 playsinline aria-label="Video Demonstration der Apex Customs Rennwagen Website"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-3xl font-display font-bold text-white mb-2">Apex Customs</h3>
                             <p class="text-gray-300 text-sm max-w-sm">Dein Rennwagen. Deine Regeln. Höchstleistung
                                 trifft auf absolute Individualität.</p>
@@ -510,14 +531,14 @@
 
                     <!-- Projekt 12: Maik Becker Portfolio -->
                     <a href="#"
-                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
                         aria-label="Projekt ansehen: Mein Portfolio">
                         <div class="project-media-container">
                             <img src="images/Bildschirmfoto 2026-02-23 um 12.14.38.png"
                                 alt="Ansicht des vorherigen Webdesign Portfolios"
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <h3 class="text-2xl font-display font-bold text-white mb-1">Mein Portfolio</h3>
                             <p class="text-gray-300 text-xs">Spezialisiert auf modernes Webdesign und kreative Konzepte.
                             </p>
@@ -526,7 +547,7 @@
 
                     <!-- Projekt 13: FrechDax Video (Grand Finale) -->
                     <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-12 cursor-hover relative overflow-hidden group rounded-2xl mt-10 md:mt-20"
+                        class="project-card block reveal anim-blur-in md:col-span-12 cursor-hover relative overflow-hidden group rounded-2xl mt-8 md:mt-16"
                         aria-label="Videoprojekt ansehen: FrechDax Bäckerei">
                         <div class="project-media-container">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 12.11.17.mov" autoplay loop muted
@@ -534,7 +555,7 @@
                                 class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
                         </div>
                         <div
-                            class="project-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-8 md:p-12">
+                            class="project-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-6 md:p-8">
                             <h3 class="text-5xl md:text-7xl font-display font-bold text-white mb-2">FrechDax</h3>
                             <p class="text-gray-300 text-sm md:text-base max-w-md">Zeit für Echtes. Handwerk, das man
                                 schmeckt – und das seit über 100 Jahren.</p>
@@ -546,10 +567,10 @@
         </section>
 
         <!-- ABOUT SECTION -->
-        <section id="about" class="py-32 bg-neutral-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]"
+        <section id="about" class="py-24 md:py-32 bg-neutral-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]"
             aria-labelledby="about-heading">
             <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
                     <div class="reveal">
                         <h2 id="about-heading" class="text-4xl md:text-6xl font-display font-bold mb-8">Hinter den
                             <br>Kulissen.
@@ -592,7 +613,7 @@
     </main>
 
     <!-- FOOTER / CONTACT -->
-    <footer class="relative py-40 flex flex-col items-center justify-center text-center overflow-hidden"
+    <footer class="relative py-24 md:py-32 flex flex-col items-center justify-center text-center overflow-hidden"
         aria-labelledby="contact-heading">
         <div class="absolute inset-0 bg-black -z-10" aria-hidden="true"></div>
         <!-- Gradient Blob Hinten -->
@@ -613,7 +634,7 @@
                     aria-hidden="true"></div>
             </a>
 
-            <div class="mt-20 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-gray-500">
+            <div class="mt-16 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-gray-500">
                 <a href="tel:+4915100000000" class="hover:text-white transition-colors cursor-hover"
                     aria-label="Ruf mich an unter +49 151 000 00 000">+49 (0) 151 000 00 000</a>
                 <span class="hidden md:inline text-gray-700" aria-hidden="true">|</span>
@@ -621,7 +642,7 @@
                     aria-label="Sende eine E-Mail an hallo@maikbecker.com">hallo@maikbecker.com</a>
             </div>
 
-            <p class="mt-20 text-gray-700 text-xs">
+            <p class="mt-16 text-gray-700 text-xs">
                 © 2026 Maik Becker. Alle Rechte vorbehalten.
             </p>
         </div>
