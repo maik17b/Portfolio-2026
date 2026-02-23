@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maik Becker | Designer & Prompt Engineer</title>
+    <meta name="description"
+        content="Portfolio von Maik Becker - Designer & Prompt Engineer. Spezialisiert auf UI/UX Design und Künstliche Intelligenz.">
 
-    <!-- Tailwind CSS (wird via CDN geladen, perfekt für schnelle Integrationen) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts: Syne & Inter -->
@@ -26,10 +28,36 @@
             color: #f3f4f6;
             overflow-x: hidden;
             cursor: none;
-            /* Versteckt den normalen Cursor für unseren Custom Cursor */
         }
 
-        /* Mobile Fix: Normaler Cursor auf Touch-Geräten, Custom Cursor verstecken */
+        /* Tastatur-Fokus: Deutlicher Rahmen nur für Tastaturnutzer */
+        *:focus-visible {
+            outline: 3px solid #60a5fa;
+            /* Auffälliges Hellblau */
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        /* Skip Link für Screenreader & Tastaturnutzer */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #ffffff;
+            color: #000000;
+            padding: 8px 16px;
+            z-index: 99999;
+            font-weight: bold;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 20px;
+            left: 20px;
+            cursor: none;
+        }
+
+        /* Mobile Fix: Normaler Cursor auf Touch-Geräten */
         @media (hover: none) and (pointer: coarse) {
             body {
                 cursor: auto;
@@ -47,7 +75,7 @@
             font-family: 'Syne', sans-serif;
         }
 
-        /* Noise / Grain Overlay (Kino-Effekt) */
+        /* Noise / Grain Overlay */
         .bg-noise {
             position: fixed;
             top: 0;
@@ -60,7 +88,7 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Custom Cursor (Linsen/Invert-Effekt) */
+        /* Custom Cursor */
         #cursor {
             position: fixed;
             top: 0;
@@ -76,7 +104,6 @@
             transition: width 0.3s ease, height 0.3s ease;
         }
 
-        /* Hover-Status für den Cursor */
         body.hovering #cursor {
             width: 80px;
             height: 80px;
@@ -90,20 +117,51 @@
         .reveal {
             opacity: 0;
             transform: translateY(50px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .reveal.anim-from-left {
+            transform: translateX(-80px);
+        }
+
+        .reveal.anim-from-right {
+            transform: translateX(80px);
+        }
+
+        .reveal.anim-scale-up {
+            transform: scale(0.85) translateY(40px);
+        }
+
+        .reveal.anim-rotate-in {
+            transform: translateY(60px) rotate(4deg);
+            transform-origin: bottom left;
+        }
+
+        .reveal.anim-blur-in {
+            transform: translateY(40px) scale(0.95);
+            filter: blur(15px);
+        }
+
+        .reveal.anim-flip-up {
+            transform: perspective(1000px) rotateX(15deg) translateY(50px);
         }
 
         .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate(0, 0) scale(1) rotate(0deg) rotateX(0deg);
+            filter: blur(0);
         }
 
-        /* Projekt Hover Effekt */
+        /* Projekt Hover & Focus Effekt (Kombiniert für Barrierefreiheit) */
         .project-img {
             transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .project-card:hover .project-img {
+        .project-card:hover .project-img,
+        .project-card:focus-visible .project-img {
             transform: scale(1.03);
         }
 
@@ -113,11 +171,11 @@
             transition: opacity 0.5s ease;
         }
 
-        .project-card:hover .project-overlay {
+        .project-card:hover .project-overlay,
+        .project-card:focus-visible .project-overlay {
             opacity: 1;
         }
 
-        /* Projektkarten: Bilder voll sichtbar, kein Beschnitt wie gewünscht */
         .project-card .project-media-container {
             overflow: hidden;
             border-radius: 1rem;
@@ -136,7 +194,7 @@
             object-fit: contain;
         }
 
-        /* Laufschrift (Marquee) */
+        /* Marquee */
         .marquee {
             white-space: nowrap;
             overflow: hidden;
@@ -162,353 +220,409 @@
 
 <body class="antialiased selection:bg-white selection:text-black">
 
-    <!-- Der Grain Effekt -->
-    <div class="bg-noise"></div>
+    <!-- Skip Link für Tastaturnutzer -->
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
 
-    <!-- Custom Cursor Element -->
-    <div id="cursor"></div>
+    <!-- Der Grain Effekt (Für Screenreader unsichtbar) -->
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <!-- Custom Cursor Element (Für Screenreader unsichtbar) -->
+    <div id="cursor" aria-hidden="true"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full top-0 p-4 md:p-6 flex justify-between items-center z-40 mix-blend-difference">
-        <div class="text-xl font-bold font-display tracking-tighter">MB.</div>
-        <div class="flex gap-6 md:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
-            <a href="#work" class="hover:text-white transition-colors cursor-hover hidden md:block">Arbeiten</a>
-            <a href="#about" class="hover:text-white transition-colors cursor-hover hidden md:block">Über Mich</a>
-            <a href="mailto:hallo@maikbecker.com"
-                class="bg-white text-black px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-semibold hover:bg-gray-200 hover:scale-105 transition-all cursor-hover">Kontakt</a>
+    <nav class="fixed w-full top-0 z-40 mix-blend-difference" aria-label="Hauptnavigation">
+        <div class="w-full max-w-[1440px] mx-auto p-4 md:p-6 flex justify-between items-center">
+            <div class="text-xl font-bold font-display tracking-tighter" aria-label="Maik Becker Logo">MB.</div>
+            <div class="flex gap-6 md:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
+                <a href="#work" class="hover:text-white transition-colors cursor-hover hidden md:block">Projekte</a>
+                <a href="#about" class="hover:text-white transition-colors cursor-hover hidden md:block">Über Mich</a>
+                <a href="mailto:hallo@maikbecker.com"
+                    class="bg-white text-black px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-semibold hover:bg-gray-200 hover:scale-105 transition-all cursor-hover"
+                    aria-label="Maik Becker kontaktieren">Kontakt</a>
+            </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <header
-        class="relative min-h-screen pt-32 pb-20 md:pt-0 md:pb-0 flex flex-col md:flex-row items-center justify-between px-6 md:px-20 overflow-hidden max-w-[1440px] mx-auto">
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <!-- Subtile animierte Blobs im Hintergrund für Tiefe -->
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] -z-10 animate-pulse">
-        </div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] -z-10 animate-pulse"
+            aria-hidden="true"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-900/20 rounded-full blur-[100px] -z-10 animate-pulse"
-            style="animation-delay: 2s;"></div>
+            style="animation-delay: 2s;" aria-hidden="true"></div>
 
-        <!-- Linke Seite: Text & Info -->
-        <div class="reveal z-10 w-full md:w-3/5">
-            <p class="text-gray-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base">Portfolio 2026</p>
-            <h1
-                class="text-[15vw] md:text-[8vw] font-display font-bold leading-[0.9] md:leading-[0.85] tracking-tighter mb-6">
-                MAIK <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">BECKER</span>
-            </h1>
+        <!-- Inner Container mit max-w-1440px -->
+        <div
+            class="w-full max-w-[1440px] mx-auto px-6 md:px-20 pt-32 pb-20 md:pt-0 md:pb-0 flex flex-col md:flex-row items-center justify-between z-10">
+            <!-- Linke Seite: Text & Info -->
+            <div class="reveal z-10 w-full md:w-3/5">
+                <p class="text-gray-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base">Portfolio 2026</p>
+                <h1
+                    class="text-[15vw] md:text-[8vw] font-display font-bold leading-[0.9] md:leading-[0.85] tracking-tighter mb-6">
+                    MAIK <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">BECKER</span>
+                </h1>
 
-            <div class="flex flex-col gap-6 mt-8">
-                <p class="text-xl md:text-2xl font-light max-w-xl text-gray-300">
-                    Designer mit Spezialisierung auf <strong class="font-normal text-white">Prompt Engineering</strong>.
-                    Ich kreiere unkonventionelle, visuell beeindruckende Welten an der Schnittstelle von KI und Design.
-                </p>
+                <div class="flex flex-col gap-6 mt-8">
+                    <p class="text-xl md:text-2xl font-light max-w-xl text-gray-300">
+                        Designer & <strong class="font-normal text-white">Prompt Engineer</strong>.
+                        Ich erschaffe moderne, beeindruckende Welten an der Schnittstelle von klassischem Design und
+                        Künstlicher Intelligenz.
+                    </p>
 
-                <div>
-                    <a href="#work"
-                        class="group inline-flex items-center gap-3 text-sm uppercase tracking-widest cursor-hover pb-2 border-b border-gray-700 hover:border-white transition-colors">
-                        Projekte ansehen
-                        <i
-                            class="ph ph-arrow-down-right text-xl group-hover:translate-y-1 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
+                    <div>
+                        <a href="#work"
+                            class="group inline-flex items-center gap-3 text-sm uppercase tracking-widest cursor-hover pb-2 border-b border-gray-700 hover:border-white transition-colors">
+                            Projekte entdecken
+                            <i class="ph ph-arrow-down-right text-xl group-hover:translate-y-1 group-hover:translate-x-1 transition-transform"
+                                aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Rechte Seite: Bild Platzhalter -->
-        <div class="reveal z-10 w-full md:w-2/5 mt-16 md:mt-0 flex justify-center md:justify-end relative">
-            <div
-                class="relative w-3/4 md:w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden cursor-hover group shadow-2xl shadow-black/50">
-                <!-- Hero Image -->
-                <img src="Image-Hero/Gemini_Generated_Image_yf2j9vyf2j9vyf2j.png" alt="Maik Becker Portrait"
-                    class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
-                <div class="absolute inset-0 border border-white/10 rounded-2xl pointer-events-none"></div>
+            <!-- Rechte Seite: Bild Platzhalter -->
+            <div class="reveal z-10 w-full md:w-2/5 mt-16 md:mt-0 flex justify-center md:justify-end relative">
+                <div
+                    class="relative w-3/4 md:w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden cursor-hover group shadow-2xl shadow-black/50">
+                    <!-- Hero Image -->
+                    <img src="Image-Hero/Gemini_Generated_Image_yf2j9vyf2j9vyf2j.png"
+                        alt="Porträt von Maik Becker in bläulicher Beleuchtung"
+                        class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"
+                        aria-hidden="true"></div>
+                    <div class="absolute inset-0 border border-white/10 rounded-2xl pointer-events-none"
+                        aria-hidden="true"></div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Laufschrift Banner -->
-    <div
-        class="py-10 border-y border-gray-800 bg-neutral-950/50 backdrop-blur-sm overflow-hidden flex items-center max-w-[1440px] mx-auto">
-        <div class="marquee font-display text-4xl md:text-6xl font-bold text-gray-800 uppercase tracking-tighter">
-            <div class="marquee-content">
-                <span>UX/UI Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                    Strategie &nbsp;—&nbsp; </span>
-                <span>UX/UI Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                    Strategie &nbsp;—&nbsp; </span>
-                <span>UX/UI Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                    Strategie &nbsp;—&nbsp; </span>
-                <span>UX/UI Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                    Strategie &nbsp;—&nbsp; </span>
+    <!-- Hauptinhalt startet hier -->
+    <main id="main-content">
+
+        <!-- Laufschrift Banner -->
+        <div
+            class="py-10 border-y border-gray-800 bg-neutral-950/50 backdrop-blur-sm overflow-hidden flex items-center">
+            <!-- Visuell versteckter Text für Screenreader -->
+            <p class="sr-only">Meine Schwerpunkte: UI/UX Design, Prompt Engineering, Art Direction, KI Strategie.</p>
+
+            <!-- Visuelle Laufschrift (für SR unsichtbar) -->
+            <div class="marquee font-display text-4xl md:text-6xl font-bold text-gray-800 uppercase tracking-tighter"
+                aria-hidden="true">
+                <div class="marquee-content">
+                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
+                        Strategie &nbsp;—&nbsp; </span>
+                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
+                        Strategie &nbsp;—&nbsp; </span>
+                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
+                        Strategie &nbsp;—&nbsp; </span>
+                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
+                        Strategie &nbsp;—&nbsp; </span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- WORK / SHOWCASE SECTION -->
-    <section id="work" class="py-32 px-6 md:px-20 max-w-[1440px] mx-auto">
-        <div class="reveal mb-20 flex justify-between items-end">
-            <h2 class="text-5xl md:text-7xl font-display font-bold">Selected<br>Works</h2>
-            <p class="text-gray-500 max-w-xs text-right hidden md:block">Eine Auswahl meiner besten Projekte aus den
-                Bereichen UI/UX und KI-generiertem Design.</p>
-        </div>
-
-        <!-- Asymmetrisches Grid (13 Projekte) -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
-
-            <!-- Projekt 1: Zimt & Zucker -->
-            <div class="project-card reveal md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl">
-                <div class="project-media-container">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.47.22.png" alt="Zimt und Zucker"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+        <!-- WORK / SHOWCASE SECTION -->
+        <section id="work" class="py-32" aria-label="Meine Projekte">
+            <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
+                <div class="reveal mb-20 flex justify-between items-end">
+                    <h2 class="text-5xl md:text-7xl font-display font-bold">Ausgewählte<br>Projekte</h2>
+                    <p class="text-gray-500 max-w-xs text-right hidden md:block">Eine Sammlung meiner besten Arbeiten
+                        aus den Bereichen Webdesign und Künstliche Intelligenz.</p>
                 </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-                    <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">Zimt & Zucker</h3>
-                    <p class="text-gray-300 text-sm max-w-md">Nostalgischer Charme. Frühstücken wie bei Oma – nur
-                        schöner.</p>
+
+                <!-- Asymmetrisches Grid (Projektkarten als Links) -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+                    <!-- Projekt 1: Zimt & Zucker -->
+                    <a href="#"
+                        class="project-card block reveal anim-from-left md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl"
+                        aria-label="Projekt ansehen: Zimt & Zucker">
+                        <div class="project-media-container">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.47.22.png"
+                                alt="Startseite der Zimt und Zucker Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8 md:p-10">
+                            <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">Zimt & Zucker</h3>
+                            <p class="text-gray-300 text-sm max-w-md">Nostalgischer Charme. Frühstücken wie bei Oma –
+                                nur viel schöner.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 2: Zimt & Zucker Detail -->
+                    <a href="#"
+                        class="project-card block reveal anim-from-right md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
+                        aria-label="Projekt ansehen: Zimt & Liebe">
+                        <div class="project-media-container">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.47.34.png"
+                                alt="Detailansicht der Zimt und Zucker Website mit gemütlichem Sessel"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-2xl font-display font-bold text-white mb-1">Zimt & Liebe</h3>
+                            <p class="text-gray-300 text-xs">Ein gemütliches Wohnzimmer mitten in der Stadt.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 3: Juni Essentials -->
+                    <a href="#"
+                        class="project-card block reveal anim-blur-in md:col-span-10 md:col-start-2 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        aria-label="Projekt ansehen: Juni Essentials">
+                        <div class="project-media-container bg-[#1a1a1a]">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.51.40.png"
+                                alt="Startseite von Juni Essentials mit Kaffeebohnen"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                            <h3 class="text-4xl font-display font-bold text-white mb-2">Juni Essentials</h3>
+                            <p class="text-gray-300 text-sm max-w-md">Dein täglicher Antrieb. Markenidentität und
+                                Webdesign für moderne Kaffeekultur.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 4: Juni Objects -->
+                    <a href="#"
+                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-10"
+                        aria-label="Projekt ansehen: Juni Objects & Merch">
+                        <div class="project-media-container bg-white">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.51.54.png"
+                                alt="Produktansicht von Juni Essentials Objekten"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-2xl font-display font-bold text-white mb-1">Objects & Merch</h3>
+                            <p class="text-gray-300 text-xs">Kaffee • Drinks • Accessoires</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 5: GreenNest Video -->
+                    <a href="#"
+                        class="project-card block reveal anim-flip-up md:col-span-7 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
+                        aria-label="Videoprojekt ansehen: GreenNest Living">
+                        <div class="project-media-container">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.13.26.mov" autoplay loop muted
+                                playsinline aria-label="Video Demonstration der GreenNest Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                            <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">GreenNest Living
+                            </h3>
+                            <p class="text-gray-300 text-sm max-w-md">Schön. Nachhaltig. Zuhause. Ästhetische und
+                                umweltfreundliche Einrichtung.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 6: Nexus Horology -->
+                    <a href="#"
+                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        aria-label="Projekt ansehen: Nexus Horology">
+                        <div class="project-media-container">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.56.42.png"
+                                alt="Startseite von Nexus Horology im Dark Mode"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-3xl font-display font-bold text-white mb-2">Nexus Horology</h3>
+                            <p class="text-gray-300 text-sm max-w-md">Höchste Präzision. Meisterhafte Restaurierung von
+                                mechanischen Uhren.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 7: Nexus Detail -->
+                    <a href="#"
+                        class="project-card block reveal anim-from-right md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32"
+                        aria-label="Projekt ansehen: Nexus Atelier">
+                        <div class="project-media-container">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.56.49.png"
+                                alt="Detailansicht der Nexus Website mit edler Typografie"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-2xl font-display font-bold text-white mb-1">Nexus Atelier</h3>
+                            <p class="text-gray-300 text-xs">Die Seele der Zeit bewahren – durch echte Handwerkskunst.
+                            </p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 8: Daily Ritual -->
+                    <a href="#"
+                        class="project-card block reveal anim-from-left md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        aria-label="Projekt ansehen: Daily Ritual">
+                        <div class="project-media-container bg-[#f4f7f4]">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 12.09.26.png"
+                                alt="Startseite von Daily Ritual"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-2xl font-display font-bold text-white mb-1">Daily Ritual</h3>
+                            <p class="text-gray-300 text-xs max-w-[200px]">Dein täglicher Kaffee. Einfach und
+                                unkompliziert.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 9: Klangerfinder Video -->
+                    <a href="#"
+                        class="project-card block reveal anim-blur-in md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-20"
+                        aria-label="Videoprojekt ansehen: Klangerfinder">
+                        <div class="project-media-container bg-[#111]">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.53.27.mov" autoplay loop muted
+                                playsinline aria-label="Video Demonstration der Klangerfinder Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
+                            <h3 class="text-4xl font-display font-bold text-white mb-2">Klangerfinder</h3>
+                            <p class="text-gray-300 text-sm max-w-md">Wir machen Marken hörbar. Die perfekte Mischung
+                                aus Kunst, Psychologie und Technologie.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 10: Silent Luxury -->
+                    <a href="#"
+                        class="project-card block reveal anim-flip-up md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        aria-label="Projekt ansehen: Silent Luxury">
+                        <div class="project-media-container bg-[#fcfbf9]">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 12.16.03.png"
+                                alt="Mode-Website Silent Luxury mit Buch-Ästhetik"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-3xl font-display font-bold text-white mb-2">Silent Luxury</h3>
+                            <p class="text-gray-300 text-sm max-w-sm">Hochwertige Mode für deinen Alltag. Die Frühjahr /
+                                Sommer Kollektion.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 11: Apex Customs Video -->
+                    <a href="#"
+                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32"
+                        aria-label="Videoprojekt ansehen: Apex Customs">
+                        <div class="project-media-container bg-black">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.57.55.mov" autoplay loop muted
+                                playsinline aria-label="Video Demonstration der Apex Customs Rennwagen Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-3xl font-display font-bold text-white mb-2">Apex Customs</h3>
+                            <p class="text-gray-300 text-sm max-w-sm">Dein Rennwagen. Deine Regeln. Höchstleistung
+                                trifft auf absolute Individualität.</p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 12: Maik Becker Portfolio -->
+                    <a href="#"
+                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-10"
+                        aria-label="Projekt ansehen: Mein Portfolio">
+                        <div class="project-media-container">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 12.14.38.png"
+                                alt="Ansicht des vorherigen Webdesign Portfolios"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        </div>
+                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
+                            <h3 class="text-2xl font-display font-bold text-white mb-1">Mein Portfolio</h3>
+                            <p class="text-gray-300 text-xs">Spezialisiert auf modernes Webdesign und kreative Konzepte.
+                            </p>
+                        </div>
+                    </a>
+
+                    <!-- Projekt 13: FrechDax Video (Grand Finale) -->
+                    <a href="#"
+                        class="project-card block reveal anim-blur-in md:col-span-12 cursor-hover relative overflow-hidden group rounded-2xl mt-10 md:mt-20"
+                        aria-label="Videoprojekt ansehen: FrechDax Bäckerei">
+                        <div class="project-media-container">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 12.11.17.mov" autoplay loop muted
+                                playsinline aria-label="Video Demonstration der FrechDax Bäckerei Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                        </div>
+                        <div
+                            class="project-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-8 md:p-12">
+                            <h3 class="text-5xl md:text-7xl font-display font-bold text-white mb-2">FrechDax</h3>
+                            <p class="text-gray-300 text-sm md:text-base max-w-md">Zeit für Echtes. Handwerk, das man
+                                schmeckt – und das seit über 100 Jahren.</p>
+                        </div>
+                    </a>
+
                 </div>
             </div>
+        </section>
 
-            <!-- Projekt 2: Zimt & Zucker Detail -->
-            <div
-                class="project-card reveal md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24">
-                <div class="project-media-container">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.47.34.png" alt="Zimt und Zucker Detail"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-2xl font-display font-bold text-white mb-1">Zimt & Liebe</h3>
-                    <p class="text-gray-300 text-xs">Ein Wohnzimmer inmitten der Stadt.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 3: Juni Essentials -->
-            <div
-                class="project-card reveal md:col-span-10 md:col-start-2 cursor-hover relative overflow-hidden group rounded-2xl mt-10">
-                <div class="project-media-container bg-[#1a1a1a]">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.51.40.png" alt="Juni Essentials"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
-                    <h3 class="text-4xl font-display font-bold text-white mb-2">Juni Essentials</h3>
-                    <p class="text-gray-300 text-sm max-w-md">Your Daily Fuel. Brand Identity und Web-Konzept für
-                        moderne Coffee-Kultur.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 4: Juni Objects -->
-            <div
-                class="project-card reveal md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-10">
-                <div class="project-media-container bg-white">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.51.54.png" alt="Juni Objects"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-2xl font-display font-bold text-white mb-1">Objects & Merch</h3>
-                    <p class="text-gray-300 text-xs">Coffee • Drinks • Objects</p>
-                </div>
-            </div>
-
-            <!-- Projekt 5: GreenNest Video -->
-            <div
-                class="project-card reveal md:col-span-7 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24">
-                <div class="project-media-container">
-                    <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.13.26.mov" autoplay loop muted playsinline
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
-                    <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">GreenNest Living</h3>
-                    <p class="text-gray-300 text-sm max-w-md">Schön. Nachhaltig. Zuhause. Ästhetisch, modern und
-                        verantwortungsvoll.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 6: Nexus Horology -->
-            <div
-                class="project-card reveal md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10">
-                <div class="project-media-container">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.56.42.png" alt="Nexus Horology"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-3xl font-display font-bold text-white mb-2">Nexus Horology</h3>
-                    <p class="text-gray-300 text-sm max-w-md">Precision beyond Reason. Micro-mechanical restoration.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 7: Nexus Detail -->
-            <div
-                class="project-card reveal md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32">
-                <div class="project-media-container">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 11.56.49.png" alt="Nexus Detail"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-2xl font-display font-bold text-white mb-1">Nexus Atelier</h3>
-                    <p class="text-gray-300 text-xs">Preserving the soul of time through precision execution.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 8: Daily Ritual -->
-            <div
-                class="project-card reveal md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-10">
-                <div class="project-media-container bg-[#f4f7f4]">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 12.09.26.png" alt="Daily Ritual"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-2xl font-display font-bold text-white mb-1">Daily Ritual</h3>
-                    <p class="text-gray-300 text-xs max-w-[200px]">Dein täglicher Treibstoff. Unkompliziert.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 9: Klangerfinder Video -->
-            <div
-                class="project-card reveal md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-20">
-                <div class="project-media-container bg-[#111]">
-                    <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.53.27.mov" autoplay loop muted playsinline
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-10">
-                    <h3 class="text-4xl font-display font-bold text-white mb-2">Klangerfinder</h3>
-                    <p class="text-gray-300 text-sm max-w-md">Wir machen Marken hörbar. An der Schnittstelle von Kunst,
-                        Psychologie und Hochtechnologie.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 10: Silent Luxury -->
-            <div
-                class="project-card reveal md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-10">
-                <div class="project-media-container bg-[#fcfbf9]">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 12.16.03.png" alt="Silent Luxury"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-3xl font-display font-bold text-white mb-2">Silent Luxury</h3>
-                    <p class="text-gray-300 text-sm max-w-sm">Elevated essentials for the dual life. Spring / Summer
-                        2026.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 11: Apex Customs Video -->
-            <div
-                class="project-card reveal md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-32">
-                <div class="project-media-container bg-black">
-                    <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.57.55.mov" autoplay loop muted playsinline
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-3xl font-display font-bold text-white mb-2">Apex Customs</h3>
-                    <p class="text-gray-300 text-sm max-w-sm">Dein Rennwagen. Deine Regeln. High-Performance trifft auf
-                        grenzenlose Individualität.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 12: Maik Becker Portfolio -->
-            <div
-                class="project-card reveal md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-10">
-                <div class="project-media-container">
-                    <img src="images/Bildschirmfoto 2026-02-23 um 12.14.38.png" alt="Medien Designer Portfolio"
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                </div>
-                <div class="project-overlay absolute inset-0 flex flex-col justify-end p-8">
-                    <h3 class="text-2xl font-display font-bold text-white mb-1">Personal Portfolio</h3>
-                    <p class="text-gray-300 text-xs">Spezialisiert auf Frontend-Webdesign und kreative Lösungen.</p>
-                </div>
-            </div>
-
-            <!-- Projekt 13: FrechDax Video (Grand Finale) -->
-            <div
-                class="project-card reveal md:col-span-12 cursor-hover relative overflow-hidden group rounded-2xl mt-10 md:mt-20">
-                <div class="project-media-container">
-                    <video src="VID/Bildschirmaufnahme 2026-02-23 um 12.11.17.mov" autoplay loop muted playsinline
-                        class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                </div>
-                <div
-                    class="project-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-8 md:p-12">
-                    <h3 class="text-5xl md:text-7xl font-display font-bold text-white mb-2">FrechDax</h3>
-                    <p class="text-gray-300 text-sm md:text-base max-w-md">Zeit für Echtes. Handwerk, das man schmeckt.
-                        Seit 111 Jahren.</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-32 px-6 md:px-20 bg-neutral-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]">
-        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
-            <div class="reveal">
-                <h2 class="text-4xl md:text-6xl font-display font-bold mb-8">Hinter dem <br>Screen.</h2>
-                <div class="w-20 h-1 bg-white mb-8"></div>
-            </div>
-            <div class="reveal space-y-6 text-lg text-gray-300 font-light">
-                <p>
-                    Ich bin Maik Becker. Mein Ansatz verbindet klassisches visuelles Design mit der rohen Kraft von
-                    künstlicher Intelligenz.
-                </p>
-                <p>
-                    Als Prompt Engineer und Designer schreibe ich nicht nur Code oder setze Pixel – ich spreche mit
-                    Maschinen, um visuelle Konzepte zu erschaffen, die bisher undenkbar waren. Von der ersten Text-Idee
-                    bis zur fertigen, responsiven Oberfläche.
-                </p>
-                <div class="pt-8">
-                    <h4 class="font-bold text-white mb-4">Core Skills</h4>
-                    <div class="flex flex-wrap gap-3">
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">UI/UX
-                            Design</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Illustrator</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">InDesign</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Photoshop</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">WebFlow</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Framer</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Figma</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">ChatGPT</span>
-                        <span
-                            class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Gemini</span>
+        <!-- ABOUT SECTION -->
+        <section id="about" class="py-32 bg-neutral-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]"
+            aria-labelledby="about-heading">
+            <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                    <div class="reveal">
+                        <h2 id="about-heading" class="text-4xl md:text-6xl font-display font-bold mb-8">Hinter den
+                            <br>Kulissen.
+                        </h2>
+                        <div class="w-20 h-1 bg-white mb-8"></div>
+                    </div>
+                    <div class="reveal space-y-6 text-lg text-gray-300 font-light">
+                        <p>
+                            Hallo, ich bin Maik Becker. In meiner Arbeit verbinde ich gutes, klares Design mit den
+                            faszinierenden Möglichkeiten der Künstlichen Intelligenz.
+                        </p>
+                        <p>
+                            Als Designer und Prompt Engineer setze ich nicht einfach nur Pixel. Ich nutze smarte
+                            Technologie, um frische Ideen zum Leben zu erwecken – vom allerersten Gedanken bis zur
+                            fertigen Website. Das Ziel? Visuelle Erlebnisse, die im Kopf bleiben.
+                        </p>
+                        <div class="pt-8">
+                            <h3 class="font-bold text-white mb-4">Meine Werkzeuge</h3>
+                            <div class="flex flex-wrap gap-3"
+                                aria-label="Liste meiner Softwarekenntnisse und Werkzeuge">
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">UI/UX
+                                    Design</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Illustrator</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">InDesign</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Photoshop</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">WebFlow</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Framer</span>
+                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Figma</span>
+                                <span
+                                    class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">ChatGPT</span>
+                                <span
+                                    class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Gemini</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- FOOTER / CONTACT (Call to Action) -->
-    <footer class="relative py-40 px-6 md:px-20 flex flex-col items-center justify-center text-center overflow-hidden">
-        <div class="absolute inset-0 bg-black -z-10"></div>
+    </main>
+
+    <!-- FOOTER / CONTACT -->
+    <footer class="relative py-40 flex flex-col items-center justify-center text-center overflow-hidden"
+        aria-labelledby="contact-heading">
+        <div class="absolute inset-0 bg-black -z-10" aria-hidden="true"></div>
         <!-- Gradient Blob Hinten -->
-        <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-900/30 rounded-full blur-[120px] -z-10">
-        </div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-900/30 rounded-full blur-[120px] -z-10"
+            aria-hidden="true"></div>
 
-        <div class="reveal">
-            <p class="text-gray-400 mb-8 uppercase tracking-widest text-sm">Bereit für das nächste Level?</p>
+        <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20 reveal">
+            <p class="text-gray-400 mb-8 uppercase tracking-widest text-sm" id="contact-heading">Lust auf ein
+                gemeinsames Projekt?</p>
 
-            <a href="mailto:hallo@maikbecker.com" class="cursor-hover group inline-block">
-                <h2
-                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500">
-                    Lass uns reden.
-                </h2>
-                <div
-                    class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500">
-                </div>
+            <a href="mailto:hallo@maikbecker.com" class="cursor-hover group inline-block"
+                aria-label="Schreibe mir eine E-Mail">
+                <span
+                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500 block">
+                    Lass uns sprechen.
+                </span>
+                <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500"
+                    aria-hidden="true"></div>
             </a>
 
-            <div class="mt-20 flex justify-center gap-8 text-gray-500">
-                <a href="#" class="hover:text-white transition-colors cursor-hover">LinkedIn</a>
-                <a href="#" class="hover:text-white transition-colors cursor-hover">Instagram</a>
-                <a href="#" class="hover:text-white transition-colors cursor-hover">Behance</a>
+            <div class="mt-20 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-gray-500">
+                <a href="tel:+4915100000000" class="hover:text-white transition-colors cursor-hover"
+                    aria-label="Ruf mich an unter +49 151 000 00 000">+49 (0) 151 000 00 000</a>
+                <span class="hidden md:inline text-gray-700" aria-hidden="true">|</span>
+                <a href="mailto:hallo@maikbecker.com" class="hover:text-white transition-colors cursor-hover"
+                    aria-label="Sende eine E-Mail an hallo@maikbecker.com">hallo@maikbecker.com</a>
             </div>
 
             <p class="mt-20 text-gray-700 text-xs">
-                © 2026 Maik Becker. All rights reserved.
+                © 2026 Maik Becker. Alle Rechte vorbehalten.
             </p>
         </div>
     </footer>
@@ -517,11 +631,11 @@
     <script>
         // 1. Custom Cursor Logik
         const cursor = document.getElementById('cursor');
-        const hoverElements = document.querySelectorAll('.cursor-hover');
+        const hoverElements = document.querySelectorAll('.cursor-hover, a'); // Auch Links triggern den Custom Cursor
 
         // Cursor Bewegung
         document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768) { // Nur auf größeren Screens bewegen
+            if (window.innerWidth > 768) {
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
             }
@@ -536,8 +650,17 @@
         // 2. Scroll Reveal Animationen (Intersection Observer)
         const revealElements = document.querySelectorAll('.reveal');
 
+        // Damit fokussierte Elemente per Tastatur auch sichtbar werden (wenn noch nicht reingescrollt)
+        const handleFocusIn = (e) => {
+            const card = e.target.closest('.reveal');
+            if (card && !card.classList.contains('active')) {
+                card.classList.add('active');
+            }
+        };
+        document.addEventListener('focusin', handleFocusIn);
+
         const revealOptions = {
-            threshold: 0.15, // 15% des Elements müssen sichtbar sein
+            threshold: 0.15,
             rootMargin: "0px 0px -50px 0px"
         };
 
@@ -547,7 +670,7 @@
                     return;
                 } else {
                     entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Nur einmal animieren
+                    observer.unobserve(entry.target);
                 }
             });
         }, revealOptions);
