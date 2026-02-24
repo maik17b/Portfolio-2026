@@ -22,11 +22,14 @@
 
     <style>
         /* Basis Setup & Fonts */
+        html,
         body {
             font-family: 'Inter', sans-serif;
             background-color: #050505;
             color: #f3f4f6;
             overflow-x: hidden;
+            width: 100%;
+            position: relative;
             cursor: none;
         }
 
@@ -79,8 +82,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 50;
             opacity: 0.05;
@@ -417,23 +420,54 @@
     <div id="cursor" aria-hidden="true"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full top-0 z-40" aria-label="Hauptnavigation">
-        <div class="w-full mx-auto p-4 md:p-6 flex justify-between items-center">
-            <div class="text-xl font-bold font-display tracking-tighter" aria-label="Maik Becker Logo">MB<span
-                    class="text-blue-500">.</span></div>
-            <div class="flex gap-6 md:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
-                <a href="#work" class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Projekte</a>
-                <a href="#about" class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Über
-                    Mich</a>
-                <a href="Hinter-den-Kulissen.html"
-                    class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Hinter den Kulissen</a>
-                <!-- E-Mail Update: bisimaik@gmail.com -->
+    <nav class="fixed w-full top-0 left-0 z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/5 transition-all duration-300"
+        aria-label="Hauptnavigation" id="main-nav">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-20 py-4 flex justify-between items-center w-full">
+            <!-- Logo -->
+            <a href="index.html" class="text-xl font-bold font-display tracking-tighter cursor-hover relative z-[60]"
+                aria-label="Zurück zur Startseite">MB<span class="text-blue-500">.</span></a>
+
+            <!-- Desktop Menü -->
+            <div class="hidden md:flex gap-6 lg:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
+                <a href="#work" class="hover:text-blue-400 transition-colors cursor-hover">Projekte</a>
+                <a href="#about" class="hover:text-blue-400 transition-colors cursor-hover">Über Mich</a>
+                <a href="Hinter-den-Kulissen.html" class="hover:text-blue-400 transition-colors cursor-hover">Hinter den
+                    Kulissen</a>
+                <!-- Kontakt Button -->
                 <a href="mailto:bisimaik@gmail.com"
-                    class="bg-blue-600 text-white px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-bold tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:bg-blue-500 hover:scale-105 transition-all cursor-hover uppercase"
+                    class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:bg-blue-500 hover:scale-105 transition-all cursor-hover uppercase ml-4"
                     aria-label="Maik Becker kontaktieren">Kontakt</a>
             </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-toggle" class="md:hidden text-white p-2 -mr-2 cursor-hover relative z-[60]"
+                aria-label="Menü öffnen">
+                <i class="ph ph-list text-3xl" id="menu-icon"></i>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-[#050505] z-[55] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-600/10 rounded-full blur-[80px] -z-10"
+            aria-hidden="true"></div>
+
+        <div class="flex flex-col items-center gap-8 text-2xl font-display uppercase tracking-[0.2em]">
+            <a href="index.html"
+                class="mobile-link opacity-0 translate-y-4 transition-all duration-500 hover:text-blue-400">Start</a>
+            <a href="#work"
+                class="mobile-link opacity-0 translate-y-4 transition-all duration-500 hover:text-blue-400 delay-[100ms]">Projekte</a>
+            <a href="#about"
+                class="mobile-link opacity-0 translate-y-4 transition-all duration-500 hover:text-blue-400 delay-[200ms]">Über
+                Mich</a>
+            <a href="Hinter-den-Kulissen.html"
+                class="mobile-link opacity-0 translate-y-4 transition-all duration-500 hover:text-blue-400 text-center delay-[300ms]">Hinter
+                den<br>Kulissen</a>
+            <a href="mailto:bisimaik@gmail.com"
+                class="mobile-link opacity-0 translate-y-4 transition-all duration-500 text-blue-500 mt-4 font-bold delay-[400ms]">Kontakt</a>
+        </div>
+    </div>
 
     <!-- HERO SECTION -->
     <header class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -444,7 +478,7 @@
             style="animation-delay: 2s;" aria-hidden="true"></div>
 
         <div
-            class="w-full max-w-[1440px] mx-auto px-6 md:px-20 pt-32 pb-20 md:pt-0 md:pb-0 flex flex-col md:flex-row items-center justify-between z-10">
+            class="max-w-[1440px] mx-auto px-6 md:px-20 pt-32 pb-20 md:pt-0 md:pb-0 flex flex-col md:flex-row items-center justify-between z-10 w-full">
             <div class="reveal z-10 w-full md:w-3/5">
                 <p class="text-blue-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base font-medium">Portfolio 2026
                 </p>
@@ -1122,6 +1156,53 @@
             if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
                 closeModal();
             }
+        });
+
+        // --- Mobile Menu Logik ---
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                menuIcon.classList.remove('ph-list');
+                menuIcon.classList.add('ph-x');
+                document.body.style.overflow = 'hidden';
+
+                // Animation für Links starten
+                setTimeout(() => {
+                    mobileLinks.forEach(link => {
+                        link.classList.remove('opacity-0', 'translate-y-4');
+                        link.classList.add('opacity-100', 'translate-y-0');
+                    });
+                }, 100);
+            } else {
+                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                menuIcon.classList.remove('ph-x');
+                menuIcon.classList.add('ph-list');
+                document.body.style.overflow = '';
+
+                // Animation für Links zurücksetzen
+                mobileLinks.forEach(link => {
+                    link.classList.add('opacity-0', 'translate-y-4');
+                    link.classList.remove('opacity-100', 'translate-y-0');
+                });
+            }
+        }
+
+        mobileMenuToggle.addEventListener('click', toggleMenu);
+
+        // Menü schließen, wenn ein Link geklickt wird
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (isMenuOpen) toggleMenu();
+            });
         });
     </script>
 
