@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designprozess | Maik Becker</title>
+    <meta name="description"
+        content="Blick hinter die Kulissen: So entsteht dein digitales Erlebnis. Der entspannte, aber strukturierte UI/UX-Designprozess von Maik Becker.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Syne & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Basis Setup & Fonts (Exakt wie auf der Startseite) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        *:focus-visible {
+            outline: 3px solid #60a5fa;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #ffffff;
+            color: #000000;
+            padding: 8px 16px;
+            z-index: 99999;
+            font-weight: bold;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 20px;
+            left: 20px;
+            cursor: none;
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            body {
+                cursor: auto;
+            }
+
+            #cursor {
+                display: none !important;
+            }
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-display {
+            font-family: 'Syne', sans-serif;
+        }
+
+        /* Noise / Grain Overlay */
+        .bg-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border 0.3s ease;
+        }
+
+        body.hovering #cursor {
+            width: 80px;
+            height: 80px;
+            background-color: transparent;
+            border: 2px solid rgba(96, 165, 250, 0.8);
+            backdrop-filter: blur(4px);
+            mix-blend-mode: normal;
+        }
+
+        /* Scroll Reveal Animationen */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity, filter;
+        }
+
+        .reveal.anim-from-left {
+            transform: translateX(-80px);
+        }
+
+        .reveal.anim-from-right {
+            transform: translateX(80px);
+        }
+
+        .reveal.anim-scale-up {
+            transform: scale(0.85) translateY(40px);
+        }
+
+        .reveal.anim-blur-in {
+            transform: translateY(40px) scale(0.95);
+            filter: blur(15px);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Medien Container Styling (aus Hauptseite übernommen) */
+        .project-media-container {
+            overflow: hidden;
+            border-radius: 1.25rem;
+            background-color: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .process-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-media-container:hover .process-img {
+            transform: scale(1.05);
+        }
+
+        /* Farbfelder für Styleguide */
+        .color-swatch {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Prozess-Linie für Desktop */
+        @media (min-width: 768px) {
+            .process-timeline::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 1px;
+                background: linear-gradient(to bottom, transparent, rgba(96, 165, 250, 0.3), transparent);
+                transform: translateX(-50%);
+                z-index: -1;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-blue-500/30 selection:text-blue-200">
+
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+    <div class="bg-noise" aria-hidden="true"></div>
+    <div id="cursor" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-40" aria-label="Hauptnavigation">
+        <div class="w-full mx-auto p-4 md:p-6 flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold font-display tracking-tighter cursor-hover"
+                aria-label="Zurück zur Startseite">MB<span class="text-blue-500">.</span></a>
+            <div class="flex gap-6 md:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
+                <a href="index.html#work"
+                    class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Projekte</a>
+                <a href="index.html#about"
+                    class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Über
+                    Mich</a>
+                <a href="Hinter-den-Kulissen.html"
+                    class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Hinter den Kulissen</a>
+                <!-- E-Mail Update: bisimaik@gmail.com -->
+                <a href="mailto:bisimaik@gmail.com"
+                    class="bg-blue-600 text-white px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-bold tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:bg-blue-500 hover:scale-105 transition-all cursor-hover uppercase"
+                    aria-label="Maik Becker kontaktieren">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION PROCESS -->
+    <header class="relative pt-40 pb-20 flex items-center justify-center overflow-hidden min-h-[70vh]">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] -z-10"
+            aria-hidden="true"></div>
+
+        <div class="w-full max-w-[1000px] mx-auto px-6 md:px-20 text-center z-10">
+            <div class="reveal">
+                <a href="index.html"
+                    class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 uppercase tracking-widest text-xs font-bold mb-8 cursor-hover transition-colors">
+                    <i class="ph ph-arrow-left"></i> Zurück zum Portfolio
+                </a>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1] tracking-tighter mb-6">
+                    HINTER DEN <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">PIXELN</span>.
+                </h1>
+                <p class="text-xl md:text-2xl font-light text-gray-400 max-w-2xl mx-auto mt-8">
+                    Ein ehrlicher Blick auf meine Arbeitsweise. Von der ersten vagen Idee auf dem Papier bis zum
+                    interaktiven Erlebnis im Browser.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="relative">
+
+        <!-- INTRO BILD -->
+        <section class="w-full max-w-[1440px] mx-auto px-6 md:px-20 pb-24 md:pb-32">
+            <div class="reveal anim-scale-up project-media-container aspect-video w-full bg-[#111]">
+                <!-- Platzhalter für ein großes Hero-Bild des Projekts -->
+                <div
+                    class="absolute inset-0 flex items-center justify-center text-gray-700 font-display text-2xl md:text-4xl opacity-50">
+                    Finales Projekt Mockup (Video / Bild)
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCESS TIMELINE -->
+        <section class="w-full max-w-[1200px] mx-auto px-6 md:px-20 py-24 md:py-32 relative process-timeline">
+
+            <!-- STEP 01: DISCOVERY & KONZEPT -->
+            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-24 mb-32 reveal anim-from-left">
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <div
+                        class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-8 flex flex-col items-center justify-center text-center">
+                        <i class="ph ph-pen-nib text-6xl text-blue-500/50 mb-4"></i>
+                        <p class="text-gray-500 font-display text-xl mt-4">Wireframes & Skizzen</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 order-1 md:order-2">
+                    <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Phase 01</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Fundament & <br>Struktur.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        Bevor ich überhaupt an Farben oder Schriften denke, muss ich verstehen, worum es wirklich geht.
+                        Wer ist deine Zielgruppe? Was genau soll die Website erreichen? Hier nutze ich oft smartes
+                        <strong>Prompt Engineering</strong>, um erste Ideen zu brainstormen und die User Journey
+                        glattzuziehen.
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Das Ergebnis sind einfache, ungestylte Wireframes. Stell sie dir wie den Grundriss eines Hauses
+                        vor: Sie bilden das logische Skelett der Seite und sorgen dafür, dass sich jeder sofort
+                        zurechtfindet – ganz ohne optische Ablenkung.
+                    </p>
+                </div>
+            </div>
+
+            <!-- STEP 02: STYLEGUIDE & UI -->
+            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-24 mb-32 reveal anim-from-right">
+                <div class="w-full md:w-1/2">
+                    <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Phase 02</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Visuelle Identität.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        Jetzt kommt Farbe ins Spiel. Basierend auf deinen Markenwerten entwickle ich ein passendes
+                        Moodboard und den ersten Styleguide. Wir definieren Schriften, Farbpaletten und das allgemeine
+                        Look & Feel.
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Dabei lege ich großen Wert auf moderne Kontraste, die für jeden gut lesbar sind. Eine starke
+                        Kombination aus verschiedenen Schriften (wie hier <em>Syne</em> und <em>Inter</em>) sorgt dafür,
+                        dass deine Seite nicht nur gut aussieht, sondern echten Charakter zeigt.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div
+                        class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-8 flex flex-col justify-center">
+                        <h4 class="font-display text-xl text-white mb-6 text-center">Styleguide Preview</h4>
+                        <div class="grid grid-cols-4 gap-4 md:gap-6 mb-8 w-[80%] md:w-[70%] mx-auto">
+                            <div class="color-swatch bg-[#050505]"></div>
+                            <div class="color-swatch bg-[#1a1a1a]"></div>
+                            <div class="color-swatch bg-[#3b82f6]"></div>
+                            <div class="color-swatch bg-[#f3f4f6]"></div>
+                        </div>
+                        <div class="text-center">
+                            <span class="font-display text-2xl text-white block mb-2">Syne Bold</span>
+                            <span class="font-sans text-gray-400 block">Inter Regular</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 03: HIGH-FIDELITY DESIGN -->
+            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-24 mb-32 reveal anim-from-left">
+                <div class="w-full md:w-1/2 order-2 md:order-1">
+                    <div class="project-media-container aspect-square bg-[#0a0a0a] border border-neutral-800 p-4">
+                        <div
+                            class="w-full h-full border border-gray-800 rounded-lg bg-[#050505] relative overflow-hidden flex flex-col">
+                            <!-- Fake Browser Header -->
+                            <div class="h-8 border-b border-gray-800 flex items-center px-4 gap-2 bg-[#0a0a0a]">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <div class="flex-1 p-6 flex items-center justify-center text-center">
+                                <span class="text-blue-500/30 text-6xl"><i class="ph ph-magic-wand"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 order-1 md:order-2">
+                    <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Phase 03</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">High-Fidelity Design.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        Struktur und Styleguide verschmelzen zum finalen Design. In Tools wie Figma oder direkt im
+                        Browser gestalte ich die fertigen Screens. Oft nutze ich dabei KI-generierte Bilder, damit wir
+                        sofort ein Gefühl für das echte Endprodukt bekommen – ganz ohne leere graue Kästen.
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Hier geht es an die Details: Abstände, kleine Animationen und das Raster werden millimetergenau
+                        abgestimmt. Jeder Pixel bekommt seinen festen Platz und Sinn.
+                    </p>
+                </div>
+            </div>
+
+            <!-- STEP 04: DEVELOPMENT & LAUNCH -->
+            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-24 mb-32 reveal anim-from-right">
+                <div class="w-full md:w-1/2">
+                    <span class="text-blue-500 font-bold tracking-widest uppercase text-sm mb-2 block">Phase 04</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">Code & Bewegung.</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        Ein Design ist erst dann wirklich fertig, wenn man es auch anklicken kann. In dieser Phase
+                        übersetze ich unsere visuellen Entwürfe in sauberen, schnellen Code (HTML, Tailwind CSS,
+                        JavaScript).
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Jetzt wird's lebendig: Ich baue fließende Animationen und coole Scroll-Effekte ein (genau wie
+                        die, die du hier siehst). Natürlich stelle ich auch sicher, dass deine Seite auf dem Smartphone
+                        genauso butterweich läuft wie auf dem großen Desktop-Monitor.
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div
+                        class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-8 flex flex-col justify-center font-mono text-sm text-blue-400/80">
+                        <p class="mb-2"><span class="text-pink-500">const</span> <span
+                                class="text-yellow-300">revealElements</span> = document.<span
+                                class="text-blue-300">querySelectorAll</span>(<span
+                                class="text-green-400">'.reveal'</span>);</p>
+                        <p class="mb-2"><span class="text-pink-500">const</span> <span
+                                class="text-yellow-300">observer</span> = <span class="text-pink-500">new</span> <span
+                                class="text-blue-300">IntersectionObserver</span>((entries) => {</p>
+                        <p class="mb-2 ml-4">entries.<span class="text-blue-300">forEach</span>(entry => {</p>
+                        <p class="mb-2 ml-8"><span class="text-pink-500">if</span> (entry.isIntersecting) {</p>
+                        <p class="mb-2 ml-12 text-white">entry.target.classList.add('active');</p>
+                        <p class="mb-2 ml-8">}</p>
+                        <p class="mb-2 ml-4">});</p>
+                        <p>});</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ZUSAMMENFASSUNG / NEXT PROJECT -->
+        <section
+            class="w-full max-w-[1440px] mx-auto px-6 md:px-20 py-24 border-t border-gray-800 mt-12 text-center reveal anim-blur-in">
+            <h3 class="text-3xl md:text-5xl font-display font-bold mb-8">Bereit für dein eigenes Projekt?</h3>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-10 text-lg leading-relaxed">
+                Jedes Projekt ist anders, aber ein strukturierter Prozess nimmt den Stress raus und sorgt für
+                erstklassige Ergebnisse. Lass uns einfach mal quatschen und schauen, wie wir deine Ideen auf den
+                Bildschirm bringen.
+            </p>
+            <a href="mailto:bisimaik@gmail.com"
+                class="inline-block bg-white text-black px-8 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-blue-500 hover:text-white transition-colors cursor-hover">
+                Lass uns starten
+            </a>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative py-24 md:py-32 flex flex-col items-center justify-center text-center overflow-hidden">
+        <div class="absolute inset-0 bg-black -z-10" aria-hidden="true"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px] -z-10"
+            aria-hidden="true"></div>
+
+        <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20 reveal">
+            <p class="text-blue-400 mb-8 uppercase tracking-widest text-sm font-medium">Lust auf ein gemeinsames
+                Projekt?</p>
+
+            <a href="mailto:bisimaik@gmail.com" class="cursor-hover group inline-block">
+                <span
+                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
+                    Lass uns sprechen.
+                </span>
+                <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500"
+                    aria-hidden="true"></div>
+                <p
+                    class="mt-6 text-gray-500 font-medium group-hover:text-blue-300 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
+                    <i class="ph ph-envelope-simple text-lg"></i> Klicke hier, um mir direkt eine E-Mail zu schreiben
+                </p>
+            </a>
+
+            <div class="mt-16 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-gray-500">
+                <a href="tel:+4915100000000" class="hover:text-blue-400 transition-colors cursor-hover">+49 (0) 151 000
+                    00 000</a>
+                <span class="hidden md:inline text-gray-700" aria-hidden="true">|</span>
+                <a href="mailto:bisimaik@gmail.com"
+                    class="hover:text-blue-400 transition-colors cursor-hover">bisimaik@gmail.com</a>
+            </div>
+
+            <p class="mt-16 text-gray-700 text-xs">
+                © 2026 Maik Becker. Alle Rechte vorbehalten.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript (Cursor & Scroll Reveal) -->
+    <script>
+        // Custom Cursor Logik
+        const cursor = document.getElementById('cursor');
+        const hoverElements = document.querySelectorAll('.cursor-hover, a, button');
+
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }
+        });
+
+        hoverElements.forEach(elem => {
+            elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // Scroll Reveal Animationen
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealOnScroll = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            revealOnScroll.observe(el);
+        });
+    </script>
+</body>
+
+</html>

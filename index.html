@@ -30,10 +30,9 @@
             cursor: none;
         }
 
-        /* Tastatur-Fokus: Deutlicher Rahmen nur für Tastaturnutzer */
+        /* Tastatur-Fokus: Deutlicher Rahmen nur für Tastaturnutzer - Unser Basis-Blau */
         *:focus-visible {
             outline: 3px solid #60a5fa;
-            /* Auffälliges Hellblau */
             outline-offset: 4px;
             border-radius: 4px;
         }
@@ -101,14 +100,15 @@
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s ease, height 0.3s ease;
+            transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border 0.3s ease;
         }
 
         body.hovering #cursor {
             width: 80px;
             height: 80px;
             background-color: transparent;
-            border: 2px solid white;
+            border: 2px solid rgba(96, 165, 250, 0.8);
+            /* Blauer Rahmen beim normalen Hover */
             backdrop-filter: blur(4px);
             mix-blend-mode: normal;
         }
@@ -155,43 +155,66 @@
             filter: blur(0);
         }
 
-        /* Projekt Hover & Focus Effekt (Kombiniert für Barrierefreiheit) */
-        .project-img {
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        /* NEU: Action Layout Styles */
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            /* Wichtig für den 3D Effekt */
+            perspective: 1500px;
         }
 
-        .project-card:hover .project-img,
-        .project-card:focus-visible .project-img {
-            transform: scale(1.03);
-        }
-
-        .project-overlay {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .project-card:hover .project-overlay,
-        .project-card:focus-visible .project-overlay {
-            opacity: 1;
-        }
-
-        .project-card .project-media-container {
+        .project-media-container {
             overflow: hidden;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             background-color: #0a0a0a;
             border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            /* Sanfter Übergang, wenn die Maus das Bild verlässt */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
-        .project-card .project-media-container img,
-        .project-card .project-media-container video {
+        /* Hover Status für die Karten (Action Effect) - Mit dezentem blauen Glow */
+        .project-card:hover .project-media-container,
+        .project-card:focus-visible .project-media-container {
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.15);
+            /* Subtiler blauer Schatten */
+            border-color: rgba(96, 165, 250, 0.3);
+            /* Blaue Border Note */
+        }
+
+        .project-img {
             display: block;
             width: 100%;
             height: auto;
             object-fit: contain;
+            /* Zoom innerhalb des Containers */
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+        }
+
+        .project-card:hover .project-img,
+        .project-card:focus-visible .project-img {
+            transform: scale(1.08);
+            /* Stärkerer Zoom für mehr Action */
+        }
+
+        /* Text für Hero Projekte (Overlay) */
+        .hero-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0;
+            /* Komplett unsichtbar ohne Hover */
+            transition: opacity 0.5s ease;
+        }
+
+        .project-card:hover .hero-overlay,
+        .project-card:focus-visible .hero-overlay {
+            opacity: 1;
+            /* Overlay taucht bei Hover auf */
         }
 
         /* Marquee */
@@ -216,7 +239,7 @@
             }
         }
 
-        /* Mobile: Bilder immer farbig anzeigen (kein Hover auf Touch) */
+        /* Mobile Adjustments */
         @media (max-width: 767px) {
 
             .project-img,
@@ -229,30 +252,184 @@
                 filter: grayscale(0) !important;
                 opacity: 1 !important;
             }
+
+            /* 3D Effekt auf Mobile deaktivieren */
+            .project-media-container {
+                transform: none !important;
+                transition: none !important;
+            }
+
+            /* Overlay auf Mobile ausblenden – Text wird unterhalb angezeigt */
+            .hero-overlay {
+                display: none;
+            }
+
+            /* Externe Hero-Textblöcke auf Mobile einblenden */
+            .hero-text-below {
+                display: flex !important;
+            }
+        }
+
+        /* Externe Hero-Textblöcke auf Desktop ausblenden */
+        .hero-text-below {
+            display: none;
+        }
+
+        /* ===== PROJECT MODAL ===== */
+        .project-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 1.5rem;
+        }
+
+        .project-modal-overlay.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .project-modal {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: rgba(18, 18, 24, 0.85);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 1.5rem;
+            padding: 3rem 2.5rem;
+            box-shadow:
+                0 0 60px rgba(59, 130, 246, 0.1),
+                0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            transform: translateY(30px) scale(0.96);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-modal-overlay.is-open .project-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .project-modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #9ca3af;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .project-modal-close:hover,
+        .project-modal-close:focus-visible {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: #60a5fa;
+        }
+
+        .project-modal-tag {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+            padding: 0.35rem 0.9rem;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 9999px;
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .project-modal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+        }
+
+        .project-modal-divider {
+            width: 3rem;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 9999px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .project-modal-desc {
+            font-size: 1.05rem;
+            line-height: 1.75;
+            color: #d1d5db;
+            font-weight: 300;
+        }
+
+        .project-modal-desc strong {
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .project-modal {
+                padding: 2rem 1.5rem;
+                border-radius: 1.25rem;
+            }
+
+            .project-modal-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Body-Lock bei offenem Modal */
+        body.modal-open {
+            overflow: hidden;
         }
     </style>
 </head>
 
-<body class="antialiased selection:bg-white selection:text-black">
+<body class="antialiased selection:bg-blue-500/30 selection:text-blue-200">
 
     <!-- Skip Link für Tastaturnutzer -->
     <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
 
-    <!-- Der Grain Effekt (Für Screenreader unsichtbar) -->
+    <!-- Der Grain Effekt -->
     <div class="bg-noise" aria-hidden="true"></div>
 
-    <!-- Custom Cursor Element (Für Screenreader unsichtbar) -->
+    <!-- Custom Cursor Element -->
     <div id="cursor" aria-hidden="true"></div>
 
     <!-- Navigation -->
     <nav class="fixed w-full top-0 z-40" aria-label="Hauptnavigation">
         <div class="w-full mx-auto p-4 md:p-6 flex justify-between items-center">
-            <div class="text-xl font-bold font-display tracking-tighter" aria-label="Maik Becker Logo">MB.</div>
+            <div class="text-xl font-bold font-display tracking-tighter" aria-label="Maik Becker Logo">MB<span
+                    class="text-blue-500">.</span></div>
             <div class="flex gap-6 md:gap-8 text-sm uppercase tracking-widest text-gray-400 items-center">
-                <a href="#work" class="hover:text-white transition-colors cursor-hover hidden md:block">Projekte</a>
-                <a href="#about" class="hover:text-white transition-colors cursor-hover hidden md:block">Über Mich</a>
-                <a href="mailto:hallo@maikbecker.com"
-                    class="bg-white text-black px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-semibold hover:bg-gray-200 hover:scale-105 transition-all cursor-hover"
+                <a href="#work" class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Projekte</a>
+                <a href="#about" class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Über
+                    Mich</a>
+                <a href="Hinter-den-Kulissen.html"
+                    class="hover:text-blue-400 transition-colors cursor-hover hidden md:block">Hinter den Kulissen</a>
+                <!-- E-Mail Update: bisimaik@gmail.com -->
+                <a href="mailto:bisimaik@gmail.com"
+                    class="bg-blue-600 text-white px-4 py-2 text-xs md:text-sm md:px-6 md:py-2.5 rounded-full font-bold tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] hover:bg-blue-500 hover:scale-105 transition-all cursor-hover uppercase"
                     aria-label="Maik Becker kontaktieren">Kontakt</a>
             </div>
         </div>
@@ -260,18 +437,17 @@
 
     <!-- HERO SECTION -->
     <header class="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <!-- Subtile animierte Blobs im Hintergrund für Tiefe -->
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] -z-10 animate-pulse"
+        <!-- Angepasste Blue-Blobs -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -z-10 animate-pulse"
             aria-hidden="true"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-900/20 rounded-full blur-[100px] -z-10 animate-pulse"
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-900/30 rounded-full blur-[100px] -z-10 animate-pulse"
             style="animation-delay: 2s;" aria-hidden="true"></div>
 
-        <!-- Inner Container mit max-w-1440px -->
         <div
             class="w-full max-w-[1440px] mx-auto px-6 md:px-20 pt-32 pb-20 md:pt-0 md:pb-0 flex flex-col md:flex-row items-center justify-between z-10">
-            <!-- Linke Seite: Text & Info -->
             <div class="reveal z-10 w-full md:w-3/5">
-                <p class="text-gray-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base">Portfolio 2026</p>
+                <p class="text-blue-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base font-medium">Portfolio 2026
+                </p>
                 <h1
                     class="text-[15vw] md:text-[8vw] font-display font-bold leading-[0.9] md:leading-[0.85] tracking-tighter mb-6">
                     MAIK <br>
@@ -280,287 +456,338 @@
 
                 <div class="flex flex-col gap-6 mt-8">
                     <p class="text-xl md:text-2xl font-light max-w-xl text-gray-300">
-                        Designer & <strong class="font-normal text-white">Prompt Engineer</strong>.
+                        Designer & <strong class="font-normal text-blue-400">Prompt Engineer</strong>.
                         Ich erschaffe moderne, beeindruckende Welten an der Schnittstelle von klassischem Design und
                         Künstlicher Intelligenz.
                     </p>
 
                     <div>
                         <a href="#work"
-                            class="group inline-flex items-center gap-3 text-sm uppercase tracking-widest cursor-hover pb-2 border-b border-gray-700 hover:border-white transition-colors">
-                            Projekte entdecken
-                            <i class="ph ph-arrow-down-right text-xl group-hover:translate-y-1 group-hover:translate-x-1 transition-transform"
+                            class="group inline-flex items-center gap-3 text-sm uppercase tracking-widest cursor-hover pb-2 border-b border-gray-700 hover:border-blue-400 transition-colors">
+                            <span class="group-hover:text-blue-400 transition-colors">Projekte entdecken</span>
+                            <i class="ph ph-arrow-down-right text-xl text-gray-500 group-hover:text-blue-400 group-hover:translate-y-1 group-hover:translate-x-1 transition-all"
                                 aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            <!-- Rechte Seite: Bild Platzhalter -->
+
             <div class="reveal z-10 w-full md:w-2/5 mt-16 md:mt-0 flex justify-center md:justify-end relative">
                 <div
-                    class="relative w-3/4 md:w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden cursor-hover group shadow-2xl shadow-black/50">
-                    <!-- Hero Image -->
-                    <img src="Image-Hero/Gemini_Generated_Image_yf2j9vyf2j9vyf2j.png"
+                    class="relative w-3/4 md:w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden cursor-hover group shadow-2xl shadow-blue-900/20">
+                    <img src="Image-Hero/Gemini_Generated_Image_db3yzvdb3yzvdb3y.png"
                         alt="Porträt von Maik Becker in bläulicher Beleuchtung"
-                        class="hero-img-mobile w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        class="hero-img-mobile w-full h-full object-cover transition-all duration-700 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"
                         aria-hidden="true"></div>
-                    <div class="absolute inset-0 border border-white/10 rounded-2xl pointer-events-none"
+                    <div class="absolute inset-0 border border-blue-500/20 rounded-2xl pointer-events-none group-hover:border-blue-400/40 transition-colors"
                         aria-hidden="true"></div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hauptinhalt startet hier -->
+    <!-- Hauptinhalt -->
     <main id="main-content">
 
         <!-- Laufschrift Banner -->
         <div
             class="py-10 border-y border-gray-800 bg-neutral-950/50 backdrop-blur-sm overflow-hidden flex items-center">
-            <!-- Visuell versteckter Text für Screenreader -->
-            <p class="sr-only">Meine Schwerpunkte: UI/UX Design, Prompt Engineering, Art Direction, KI Strategie.</p>
-
-            <!-- Visuelle Laufschrift (für SR unsichtbar) -->
+            <p class="sr-only">Meine Schwerpunkte: Prompt Engineering, UI/UX Design, Webdeveloper, Mediengestalter.</p>
             <div class="marquee font-display text-4xl md:text-6xl font-bold text-gray-800 uppercase tracking-tighter"
                 aria-hidden="true">
                 <div class="marquee-content">
-                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                        Strategie &nbsp;—&nbsp; </span>
-                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                        Strategie &nbsp;—&nbsp; </span>
-                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                        Strategie &nbsp;—&nbsp; </span>
-                    <span>UI/UX Design &nbsp;—&nbsp; Prompt Engineering &nbsp;—&nbsp; Art Direction &nbsp;—&nbsp; KI
-                        Strategie &nbsp;—&nbsp; </span>
+                    <span><span>Prompt Engineering</span> &nbsp;—&nbsp; UI/UX Design &nbsp;—&nbsp;
+                        Webdeveloper &nbsp;—&nbsp; <span class="text-white">MEDIENGESTALTER</span> &nbsp;—&nbsp; </span>
+                    <span><span>Prompt Engineering</span> &nbsp;—&nbsp; UI/UX Design &nbsp;—&nbsp;
+                        Webdeveloper &nbsp;—&nbsp; <span class="text-white">MEDIENGESTALTER</span> &nbsp;—&nbsp; </span>
+                    <span><span>Prompt Engineering</span> &nbsp;—&nbsp; UI/UX Design &nbsp;—&nbsp;
+                        Webdeveloper &nbsp;—&nbsp; <span class="text-white">MEDIENGESTALTER</span> &nbsp;—&nbsp; </span>
                 </div>
             </div>
         </div>
 
-        <!-- WORK / SHOWCASE SECTION -->
+        <!-- ACTION WORK / SHOWCASE SECTION -->
         <section id="work" class="py-24 md:py-32" aria-label="Meine Projekte">
             <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
-                <div class="reveal mb-12 md:mb-20 flex justify-between items-end">
-                    <h2 class="text-5xl md:text-7xl font-display font-bold">Ausgewählte<br>Projekte</h2>
+                <div class="reveal mb-16 md:mb-24 flex justify-between items-end">
+                    <h2 class="text-5xl md:text-7xl font-display font-bold">Ausgewählte<br>Projekte<span
+                            class="text-blue-500">.</span></h2>
                     <p class="text-gray-500 max-w-xs text-right hidden md:block">Eine Sammlung meiner besten Arbeiten
                         aus den Bereichen Webdesign und Künstliche Intelligenz.</p>
                 </div>
 
-                <!-- Asymmetrisches Grid (Projektkarten als Links) -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
-                    <!-- Projekt 1: Zimt & Zucker -->
-                    <a href="#"
-                        class="project-card block reveal anim-from-left md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl"
-                        aria-label="Projekt ansehen: Zimt & Zucker">
-                        <div class="project-media-container">
+                <!-- Neues Action Grid - Einheitliche Abstände und saubere Reihen -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-y-16 md:gap-y-24 gap-x-8 md:gap-x-12">
+
+                    <!-- HERO 1: GreenNest Video (Row 1) -->
+                    <div data-modal="greennest" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-scale-up md:col-span-12 cursor-hover group"
+                        aria-label="Projektdetails öffnen: GreenNest Living">
+                        <div class="project-media-container w-full bg-[#0a0a0a]">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.13.26.mov" autoplay loop muted
+                                playsinline
+                                class="project-img grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100"></video>
+
+                            <div class="hero-overlay absolute inset-0 flex flex-col justify-end p-8 md:p-16">
+                                <span
+                                    class="uppercase tracking-widest text-blue-400 text-xs font-bold mb-3 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Case
+                                    Study</span>
+                                <h3
+                                    class="text-5xl md:text-8xl font-display font-bold text-white mb-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                                    GreenNest Living</h3>
+                                <p
+                                    class="text-gray-300 text-lg md:text-xl max-w-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                    Schön. Nachhaltig. Zuhause. Ästhetische und umweltfreundliche Einrichtung in einem
+                                    modernen E-Commerce Erlebnis.</p>
+                            </div>
+                        </div>
+                        <!-- Mobile: Text unterhalb der Karte -->
+                        <div
+                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                GreenNest Living</h3>
+                            <p class="text-gray-400">Schön. Nachhaltig. Zuhause. Ästhetische und umweltfreundliche
+                                Einrichtung in einem modernen E-Commerce Erlebnis.</p>
+                        </div>
+                    </div>
+
+                    <!-- Standard Card: Zimt & Zucker (Row 2 - Left) -->
+                    <div data-modal="zimtzucker" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-from-left md:col-span-7 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Zimt & Zucker">
+                        <div class="project-media-container bg-[#0a0a0a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.47.22.png"
                                 alt="Startseite der Zimt und Zucker Website"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">Zimt & Zucker</h3>
-                            <p class="text-gray-300 text-sm max-w-md">Nostalgischer Charme. Frühstücken wie bei Oma –
-                                nur viel schöner.</p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Zimt & Zucker</h3>
+                            <p class="text-gray-400">Frühstücken wie bei Oma – nur viel schöner.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 2: Zimt & Zucker Detail -->
-                    <a href="#"
-                        class="project-card block reveal anim-from-right md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
-                        aria-label="Projekt ansehen: Zimt & Liebe">
-                        <div class="project-media-container">
+                    <!-- Standard Card: Zimt & Liebe (Row 2 - Right) -->
+                    <div data-modal="zimtliebe" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-from-right md:col-span-5 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Zimt & Liebe">
+                        <div class="project-media-container bg-[#0a0a0a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.47.34.png"
-                                alt="Detailansicht der Zimt und Zucker Website mit gemütlichem Sessel"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                alt="Detailansicht der Zimt und Zucker Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
-                            <div class="p-6 md:p-8">
-                                <h3 class="text-2xl font-display font-bold text-white mb-1">Zimt & Liebe</h3>
-                                <p class="text-gray-400 text-xs">Ein gemütliches Wohnzimmer mitten in der Stadt.</p>
-                            </div>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-2xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Zimt & Liebe</h3>
+                            <p class="text-gray-400 text-sm">Ein gemütliches Wohnzimmer mitten in der Stadt.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 3: Juni Essentials -->
-                    <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-10 md:col-start-2 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
-                        aria-label="Projekt ansehen: Juni Essentials">
+                    <!-- Standard Card: Juni Essentials (Row 3 - Left) -->
+                    <div data-modal="juni" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-blur-in md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Juni Essentials">
                         <div class="project-media-container bg-[#1a1a1a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.51.40.png"
-                                alt="Startseite von Juni Essentials mit Kaffeebohnen"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                alt="Startseite von Juni Essentials"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-4xl font-display font-bold text-white mb-2">Juni Essentials</h3>
-                            <p class="text-gray-300 text-sm max-w-md">Dein täglicher Antrieb. Markenidentität und
-                                Webdesign für moderne Kaffeekultur.</p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Juni Essentials</h3>
+                            <p class="text-gray-400">Markenidentität und Webdesign für moderne Kaffeekultur.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 4: Juni Objects -->
-                    <a href="#"
-                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-8"
-                        aria-label="Projekt ansehen: Juni Objects & Merch">
+                    <!-- Standard Card: Juni Objects (Row 3 - Right) -->
+                    <div data-modal="juniobjects" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-scale-up md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Juni Objects & Merch">
                         <div class="project-media-container bg-white">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.51.54.png"
-                                alt="Produktansicht von Juni Essentials Objekten"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                alt="Produktansicht von Juni Essentials"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
-                            <div class="p-6 md:p-8">
-                                <h3 class="text-2xl font-display font-bold text-white mb-1">Objects & Merch</h3>
-                                <p class="text-gray-400 text-xs">Kaffee • Drinks • Accessoires</p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-2xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Objects & Merch</h3>
+                            <p class="text-gray-400 text-sm">Kaffee • Drinks • Accessoires</p>
+                        </div>
+                    </div>
+
+                    <!-- HERO 2: Apex Customs Video (Row 4) -->
+                    <div data-modal="apex" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-flip-up md:col-span-12 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Apex Customs">
+                        <div class="project-media-container w-full bg-black rounded-3xl">
+                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.57.55.mov" autoplay loop muted
+                                playsinline
+                                class="project-img grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100"></video>
+
+                            <div
+                                class="hero-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-8 md:p-16">
+                                <span
+                                    class="uppercase tracking-widest text-blue-500 text-xs font-bold mb-3 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Performance</span>
+                                <h3
+                                    class="text-5xl md:text-7xl font-display font-bold text-white mb-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                                    Apex Customs</h3>
+                                <p
+                                    class="text-gray-300 text-lg max-w-xl translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                    Dein Rennwagen. Deine Regeln. Höchstleistung trifft auf absolute Individualität in
+                                    diesem kraftvollen Showcase.</p>
                             </div>
                         </div>
-                    </a>
+                        <!-- Mobile: Text unterhalb der Karte -->
+                        <div
+                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Apex Customs</h3>
+                            <p class="text-gray-400">Dein Rennwagen. Deine Regeln. Höchstleistung trifft auf absolute
+                                Individualität.</p>
+                        </div>
+                    </div>
 
-                    <!-- Projekt 5: GreenNest Video -->
-                    <a href="#"
-                        class="project-card block reveal anim-flip-up md:col-span-7 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
-                        aria-label="Videoprojekt ansehen: GreenNest Living">
-                        <div class="project-media-container">
-                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.13.26.mov" autoplay loop muted
-                                playsinline aria-label="Video Demonstration der GreenNest Website"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                        </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">GreenNest Living
-                            </h3>
-                            <p class="text-gray-300 text-sm max-w-md">Schön. Nachhaltig. Zuhause. Ästhetische und
-                                umweltfreundliche Einrichtung.</p>
-                        </div>
-                    </a>
-
-                    <!-- Projekt 6: Nexus Horology -->
-                    <a href="#"
-                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
-                        aria-label="Projekt ansehen: Nexus Horology">
-                        <div class="project-media-container">
-                            <img src="images/Bildschirmfoto 2026-02-23 um 11.56.42.png"
-                                alt="Startseite von Nexus Horology im Dark Mode"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                        </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-3xl font-display font-bold text-white mb-2">Nexus Horology</h3>
-                            <p class="text-gray-300 text-sm max-w-md">Höchste Präzision. Meisterhafte Restaurierung von
-                                mechanischen Uhren.</p>
-                        </div>
-                    </a>
-
-                    <!-- Projekt 7: Nexus Detail -->
-                    <a href="#"
-                        class="project-card block reveal anim-from-right md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
-                        aria-label="Projekt ansehen: Nexus Atelier">
-                        <div class="project-media-container">
+                    <!-- Standard Card: Nexus Horology (Row 5 - Left) -->
+                    <div data-modal="nexus" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-from-left md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Nexus Horology">
+                        <div class="project-media-container bg-[#0a0a0a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 11.56.49.png"
-                                alt="Detailansicht der Nexus Website mit edler Typografie"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                alt="Detailansicht der Nexus Website"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-2xl font-display font-bold text-white mb-1">Nexus Atelier</h3>
-                            <p class="text-gray-300 text-xs">Die Seele der Zeit bewahren – durch echte Handwerkskunst.
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Nexus Horology</h3>
+                            <p class="text-gray-400 text-sm">Meisterhafte Restaurierung von mechanischen Uhren.</p>
+                        </div>
+                    </div>
+
+                    <!-- Standard Card: Nexus Atelier (Row 5 - Right) -->
+                    <div data-modal="nexusatelier" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-rotate-in md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Nexus Atelier">
+                        <div class="project-media-container bg-[#0a0a0a]">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 11.56.42.png"
+                                alt="Startseite von Nexus Horology"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
+                        </div>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-2xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Nexus Atelier</h3>
+                            <p class="text-gray-400 text-sm">Die Seele der Zeit bewahren – durch echte Handwerkskunst.
                             </p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 8: Daily Ritual -->
-                    <a href="#"
-                        class="project-card block reveal anim-from-left md:col-span-4 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
-                        aria-label="Projekt ansehen: Daily Ritual">
+                    <!-- Standard Card: Daily Ritual (Row 6 - Left) -->
+                    <div data-modal="dailyritual" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-scale-up md:col-span-5 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Daily Ritual">
                         <div class="project-media-container bg-[#f4f7f4]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 12.09.26.png"
                                 alt="Startseite von Daily Ritual"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="max-h-0 overflow-hidden group-hover:max-h-24 transition-all duration-500 ease-out">
-                            <div class="p-6 md:p-8">
-                                <h3 class="text-2xl font-display font-bold text-white mb-1">Daily Ritual</h3>
-                                <p class="text-gray-400 text-xs max-w-[200px]">Dein täglicher Kaffee. Einfach und
-                                    unkompliziert.</p>
-                            </div>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-2xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Daily Ritual</h3>
+                            <p class="text-gray-400 text-sm">Dein täglicher Kaffee. Einfach und unkompliziert.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 9: Klangerfinder Video -->
-                    <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-8 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-16"
-                        aria-label="Videoprojekt ansehen: Klangerfinder">
+                    <!-- Standard Card: Klangerfinder (Row 6 - Right) -->
+                    <div data-modal="klangerfinder" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-blur-in md:col-span-7 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Klangerfinder">
                         <div class="project-media-container bg-[#111]">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.53.27.mov" autoplay loop muted
-                                playsinline aria-label="Video Demonstration der Klangerfinder Website"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                                playsinline
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"></video>
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-4xl font-display font-bold text-white mb-2">Klangerfinder</h3>
-                            <p class="text-gray-300 text-sm max-w-md">Wir machen Marken hörbar. Die perfekte Mischung
-                                aus Kunst, Psychologie und Technologie.</p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Klangerfinder</h3>
+                            <p class="text-gray-400">Wir machen Marken hörbar. Kunst trifft Technologie.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 10: Silent Luxury -->
-                    <a href="#"
-                        class="project-card block reveal anim-flip-up md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
-                        aria-label="Projekt ansehen: Silent Luxury">
+                    <!-- Standard Card: Silent Luxury (Row 7 - Left) -->
+                    <div data-modal="silentluxury" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-from-left md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Silent Luxury">
                         <div class="project-media-container bg-[#fcfbf9]">
-                            <img src="images/Bildschirmfoto 2026-02-23 um 12.16.03.png"
-                                alt="Mode-Website Silent Luxury mit Buch-Ästhetik"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                            <img src="images/Bildschirmfoto 2026-02-23 um 12.16.03.png" alt="Mode-Website Silent Luxury"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-3xl font-display font-bold text-white mb-2">Silent Luxury</h3>
-                            <p class="text-gray-300 text-sm max-w-sm">Hochwertige Mode für deinen Alltag. Die Frühjahr /
-                                Sommer Kollektion.</p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Silent Luxury</h3>
+                            <p class="text-gray-400">Hochwertige Mode für deinen Alltag.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 11: Apex Customs Video -->
-                    <a href="#"
-                        class="project-card block reveal anim-rotate-in md:col-span-6 cursor-hover relative overflow-hidden group rounded-2xl mt-0 md:mt-24"
-                        aria-label="Videoprojekt ansehen: Apex Customs">
-                        <div class="project-media-container bg-black">
-                            <video src="VID/Bildschirmaufnahme 2026-02-23 um 11.57.55.mov" autoplay loop muted
-                                playsinline aria-label="Video Demonstration der Apex Customs Rennwagen Website"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
-                        </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-3xl font-display font-bold text-white mb-2">Apex Customs</h3>
-                            <p class="text-gray-300 text-sm max-w-sm">Dein Rennwagen. Deine Regeln. Höchstleistung
-                                trifft auf absolute Individualität.</p>
-                        </div>
-                    </a>
-
-                    <!-- Projekt 12: Maik Becker Portfolio -->
-                    <a href="#"
-                        class="project-card block reveal anim-scale-up md:col-span-5 cursor-hover relative overflow-hidden group rounded-2xl mt-8"
-                        aria-label="Projekt ansehen: Mein Portfolio">
-                        <div class="project-media-container">
+                    <!-- Standard Card: Portfolio (Row 7 - Right) -->
+                    <div data-modal="portfolio" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-from-right md:col-span-6 cursor-hover group"
+                        aria-label="Projektdetails öffnen: Mein Portfolio">
+                        <div class="project-media-container bg-[#0a0a0a]">
                             <img src="images/Bildschirmfoto 2026-02-23 um 12.14.38.png"
-                                alt="Ansicht des vorherigen Webdesign Portfolios"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                alt="Ansicht des vorherigen Portfolios"
+                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100">
                         </div>
-                        <div class="project-overlay absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                            <h3 class="text-2xl font-display font-bold text-white mb-1">Mein Portfolio</h3>
-                            <p class="text-gray-300 text-xs">Spezialisiert auf modernes Webdesign und kreative Konzepte.
-                            </p>
+                        <div class="flex flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-2xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                Vorangegangenes Portfolio</h3>
+                            <p class="text-gray-400 text-sm">Spezialisiert auf modernes Webdesign.</p>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Projekt 13: FrechDax Video (Grand Finale) -->
-                    <a href="#"
-                        class="project-card block reveal anim-blur-in md:col-span-12 cursor-hover relative overflow-hidden group rounded-2xl mt-8 md:mt-16"
-                        aria-label="Videoprojekt ansehen: FrechDax Bäckerei">
-                        <div class="project-media-container">
+                    <!-- HERO 3: FrechDax Video (Row 8) -->
+                    <div data-modal="frechdax" role="button" tabindex="0"
+                        class="project-card tilt-card block reveal anim-scale-up md:col-span-12 cursor-hover group"
+                        aria-label="Projektdetails öffnen: FrechDax Bäckerei">
+                        <div class="project-media-container w-full bg-[#1a1510] rounded-[2rem]">
                             <video src="VID/Bildschirmaufnahme 2026-02-23 um 12.11.17.mov" autoplay loop muted
-                                playsinline aria-label="Video Demonstration der FrechDax Bäckerei Website"
-                                class="project-img grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"></video>
+                                playsinline
+                                class="project-img grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100"></video>
+
+                            <div
+                                class="hero-overlay absolute inset-0 flex flex-col justify-center items-center text-center p-8">
+                                <span
+                                    class="uppercase tracking-widest text-blue-300 text-xs font-bold mb-3 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Tradition</span>
+                                <h3
+                                    class="text-6xl md:text-9xl font-display font-bold text-white mb-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                                    FrechDax</h3>
+                                <p
+                                    class="text-gray-300 text-lg md:text-xl max-w-2xl translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                    Zeit für Echtes. Handwerk, das man schmeckt – Digitales Erlebnis für eine Bäckerei
+                                    mit über 100 Jahren Geschichte.</p>
+                            </div>
                         </div>
+                        <!-- Mobile: Text unterhalb der Karte -->
                         <div
-                            class="project-overlay absolute inset-0 flex flex-col justify-end items-end text-right p-6 md:p-8">
-                            <h3 class="text-5xl md:text-7xl font-display font-bold text-white mb-2">FrechDax</h3>
-                            <p class="text-gray-300 text-sm md:text-base max-w-md">Zeit für Echtes. Handwerk, das man
-                                schmeckt – und das seit über 100 Jahren.</p>
+                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            <h3
+                                class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                                FrechDax</h3>
+                            <p class="text-gray-400">Zeit für Echtes. Handwerk, das man schmeckt – Digitales Erlebnis
+                                für eine Bäckerei mit über 100 Jahren Geschichte.</p>
                         </div>
-                    </a>
+                    </div>
 
                 </div>
             </div>
@@ -568,42 +795,67 @@
 
         <!-- ABOUT SECTION -->
         <section id="about" class="py-24 md:py-32 bg-neutral-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]"
-            aria-labelledby="about-heading">
+            aria-labelledby="about-heading" tabindex="-1">
             <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
                     <div class="reveal">
-                        <h2 id="about-heading" class="text-4xl md:text-6xl font-display font-bold mb-8">Hinter den
-                            <br>Kulissen.
-                        </h2>
-                        <div class="w-20 h-1 bg-white mb-8"></div>
+                        <a href="Hinter-den-Kulissen.html" class="cursor-hover group inline-block">
+                            <h2 id="about-heading"
+                                class="text-4xl md:text-6xl font-display font-bold mb-8 group-hover:text-blue-400 transition-colors duration-300">
+                                Hinter den
+                                <br>Kulissen<span class="text-blue-500">.</span>
+                            </h2>
+                        </a>
+                        <div class="w-20 h-1 bg-blue-500 mb-8 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                        </div>
                     </div>
                     <div class="reveal space-y-6 text-lg text-gray-300 font-light">
-                        <p>
-                            Hallo, ich bin Maik Becker. In meiner Arbeit verbinde ich gutes, klares Design mit den
-                            faszinierenden Möglichkeiten der Künstlichen Intelligenz.
-                        </p>
-                        <p>
-                            Als Designer und Prompt Engineer setze ich nicht einfach nur Pixel. Ich nutze smarte
-                            Technologie, um frische Ideen zum Leben zu erwecken – vom allerersten Gedanken bis zur
-                            fertigen Website. Das Ziel? Visuelle Erlebnisse, die im Kopf bleiben.
-                        </p>
+                        <p>Hallo, ich bin Maik Becker. In meiner Arbeit verbinde ich gutes, klares Design mit den
+                            faszinierenden Möglichkeiten der Künstlichen Intelligenz.</p>
+                        <p>Als Designer und <strong class="text-blue-400 font-normal">Prompt Engineer</strong> setze ich
+                            nicht einfach nur Pixel. Ich nutze smarte Technologie, um frische Ideen zum Leben zu
+                            erwecken – vom allerersten Gedanken bis zur fertigen Website. Das Ziel? Visuelle Erlebnisse,
+                            die im Kopf bleiben.</p>
                         <div class="pt-8">
-                            <h3 class="font-bold text-white mb-4">Meine Werkzeuge</h3>
-                            <div class="flex flex-wrap gap-3"
-                                aria-label="Liste meiner Softwarekenntnisse und Werkzeuge">
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">UI/UX
-                                    Design</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Illustrator</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">InDesign</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Photoshop</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">WebFlow</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Framer</span>
-                                <span class="px-4 py-2 border border-gray-600 rounded-full text-sm">Figma</span>
-                                <span
-                                    class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">ChatGPT</span>
-                                <span
-                                    class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:bg-white hover:text-black transition-colors cursor-hover">Gemini</span>
-                            </div>
+                            <h3 class="font-bold text-white mb-4" id="tools-heading">Meine Werkzeuge</h3>
+                            <ul class="flex flex-wrap gap-3 list-none p-0 m-0" role="list"
+                                aria-labelledby="tools-heading">
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">Illustrator</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">InDesign</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">Photoshop</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">WebFlow</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">Framer</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">Figma</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">ChatGPT</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 border border-gray-600 rounded-full text-sm hover:border-blue-500 hover:bg-blue-500 hover:text-white focus-visible:border-blue-500 focus-visible:bg-blue-500 focus-visible:text-white transition-all cursor-hover inline-block">Gemini</span>
+                                </li>
+                                <li role="listitem"><span tabindex="0"
+                                        class="px-4 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white border border-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.4)] cursor-hover hover:bg-blue-500 focus-visible:bg-blue-500 transition-colors inline-block">Antigravity</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pt-8">
+                            <a href="Hinter-den-Kulissen.html"
+                                class="group inline-flex items-center gap-3 text-sm uppercase tracking-widest cursor-hover pb-2 border-b border-gray-700 hover:border-blue-400 transition-colors">
+                                <span class="group-hover:text-blue-400 transition-colors">Mehr erfahren</span>
+                                <i class="ph ph-arrow-right text-xl text-gray-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-all"
+                                    aria-hidden="true"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -616,30 +868,39 @@
     <footer class="relative py-24 md:py-32 flex flex-col items-center justify-center text-center overflow-hidden"
         aria-labelledby="contact-heading">
         <div class="absolute inset-0 bg-black -z-10" aria-hidden="true"></div>
-        <!-- Gradient Blob Hinten -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-900/30 rounded-full blur-[120px] -z-10"
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px] -z-10"
             aria-hidden="true"></div>
 
         <div class="w-full max-w-[1440px] mx-auto px-6 md:px-20 reveal">
-            <p class="text-gray-400 mb-8 uppercase tracking-widest text-sm" id="contact-heading">Lust auf ein
-                gemeinsames Projekt?</p>
+            <p class="text-blue-400 mb-8 uppercase tracking-widest text-sm font-medium" id="contact-heading">Lust auf
+                ein gemeinsames Projekt?</p>
 
-            <a href="mailto:hallo@maikbecker.com" class="cursor-hover group inline-block"
-                aria-label="Schreibe mir eine E-Mail">
+            <!-- E-Mail Update & Optimierter Call-to-Action Look -->
+            <a href="mailto:bisimaik@gmail.com" class="cursor-hover group inline-block"
+                aria-label="Schreibe mir eine E-Mail an bisimaik@gmail.com">
+
                 <span
-                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500 block">
+                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
                     Lass uns sprechen.
                 </span>
-                <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-600 transition-all duration-500"
+
+                <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500"
                     aria-hidden="true"></div>
+
+                <!-- Extra Hinweis für absolute Klarheit -->
+                <p
+                    class="mt-6 text-gray-500 font-medium group-hover:text-blue-300 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
+                    <i class="ph ph-envelope-simple text-lg"></i> Klicke hier, um mir direkt eine E-Mail zu schreiben
+                </p>
             </a>
 
-            <div class="mt-16 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-gray-500">
-                <a href="tel:+4915100000000" class="hover:text-white transition-colors cursor-hover"
+            <div class="mt-16 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-gray-500">
+                <a href="tel:+4915100000000" class="hover:text-blue-400 transition-colors cursor-hover"
                     aria-label="Ruf mich an unter +49 151 000 00 000">+49 (0) 151 000 00 000</a>
                 <span class="hidden md:inline text-gray-700" aria-hidden="true">|</span>
-                <a href="mailto:hallo@maikbecker.com" class="hover:text-white transition-colors cursor-hover"
-                    aria-label="Sende eine E-Mail an hallo@maikbecker.com">hallo@maikbecker.com</a>
+                <!-- E-Mail Update: Sichtbarer Text unten -->
+                <a href="mailto:bisimaik@gmail.com" class="hover:text-blue-400 transition-colors cursor-hover"
+                    aria-label="Sende eine E-Mail an bisimaik@gmail.com">bisimaik@gmail.com</a>
             </div>
 
             <p class="mt-16 text-gray-700 text-xs">
@@ -648,13 +909,26 @@
         </div>
     </footer>
 
-    <!-- JavaScript für Cursor & Scroll Animationen -->
+    <!-- Project Detail Modal -->
+    <div id="projectModalOverlay" class="project-modal-overlay" role="dialog" aria-modal="true"
+        aria-labelledby="modalTitle">
+        <div class="project-modal">
+            <button id="modalCloseBtn" class="project-modal-close cursor-hover" aria-label="Modal schließen">
+                <i class="ph ph-x"></i>
+            </button>
+            <span id="modalTag" class="project-modal-tag"></span>
+            <h3 id="modalTitle" class="project-modal-title"></h3>
+            <div class="project-modal-divider" aria-hidden="true"></div>
+            <p id="modalDesc" class="project-modal-desc"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
     <script>
         // 1. Custom Cursor Logik
         const cursor = document.getElementById('cursor');
-        const hoverElements = document.querySelectorAll('.cursor-hover, a'); // Auch Links triggern den Custom Cursor
+        const hoverElements = document.querySelectorAll('.cursor-hover, a');
 
-        // Cursor Bewegung
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768) {
                 cursor.style.left = e.clientX + 'px';
@@ -662,16 +936,49 @@
             }
         });
 
-        // Hover Status für Links und Projekte hinzufügen
+        // Standard Hover
         hoverElements.forEach(elem => {
             elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
             elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
         });
 
-        // 2. Scroll Reveal Animationen (Intersection Observer)
+        // 2. 3D Tilt Effekt für die Action-Cards (Nur auf Desktop)
+        const tiltCards = document.querySelectorAll('.tilt-card');
+
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                if (window.innerWidth <= 768) return; // Auf Mobile deaktivieren
+
+                const container = card.querySelector('.project-media-container');
+                if (!container) return;
+
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left; // X Position in der Karte
+                const y = e.clientY - rect.top;  // Y Position in der Karte
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Berechnung der Rotation (Maximal 5-8 Grad)
+                const rotateX = ((y - centerY) / centerY) * -6;
+                const rotateY = ((x - centerX) / centerX) * 6;
+
+                // Sanftes Anwenden der Rotation und des leichten Zooms
+                container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            // Zurücksetzen, wenn die Maus das Bild verlässt
+            card.addEventListener('mouseleave', () => {
+                const container = card.querySelector('.project-media-container');
+                if (container) {
+                    container.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                }
+            });
+        });
+
+        // 3. Scroll Reveal Animationen
         const revealElements = document.querySelectorAll('.reveal');
 
-        // Damit fokussierte Elemente per Tastatur auch sichtbar werden (wenn noch nicht reingescrollt)
         const handleFocusIn = (e) => {
             const card = e.target.closest('.reveal');
             if (card && !card.classList.contains('active')) {
@@ -687,9 +994,7 @@
 
         const revealOnScroll = new IntersectionObserver(function (entries, observer) {
             entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    return;
-                } else {
+                if (entry.isIntersecting) {
                     entry.target.classList.add('active');
                     observer.unobserve(entry.target);
                 }
@@ -699,7 +1004,127 @@
         revealElements.forEach(el => {
             revealOnScroll.observe(el);
         });
+        // ===== PROJECT MODAL LOGIC =====
+        const modalData = {
+            greennest: {
+                tag: 'Case Study',
+                title: 'GreenNest Living',
+                desc: 'Ein vollständiges <strong>E-Commerce-Erlebnis</strong> für nachhaltige Einrichtung. Vom Branding über UI/UX Design bis zur finalen Webentwicklung – dieses Projekt vereint ästhetisches Design mit umweltbewusstem Konsum.<br><br>Jedes Detail der Benutzeroberfläche wurde darauf ausgelegt, die Werte der Marke widerzuspiegeln: <strong>Natürlichkeit, Klarheit und Nachhaltigkeit.</strong> Warme Erdtöne und organische Formen schaffen ein Einkaufserlebnis, das sich bewusst von klassischen Online-Shops abhebt.'
+            },
+            apex: {
+                tag: 'Performance',
+                title: 'Apex Customs',
+                desc: 'Performance trifft Individualität. Ein <strong>Showcase für Custom-Rennwagen</strong> mit dynamischem Video-Content, kraftvollem Layout und einer UI, die Geschwindigkeit visuell erlebbar macht.<br><br>Das Design spiegelt die <strong>Kraft und Präzision</strong> der Fahrzeuge wider – mit kontrastreichen Farben, cinematischen Übergängen und einer Typografie, die Adrenalin transportiert. Jedes Element wurde für maximale visuelle Wirkung optimiert.'
+            },
+            frechdax: {
+                tag: 'Tradition',
+                title: 'FrechDax',
+                desc: 'Ein <strong>digitales Erlebnis</strong> für eine Traditionsbäckerei mit über 100 Jahren Geschichte. Warme Farben, handwerkliche Typografie und ein modernes Webdesign, das Tradition und Zukunft verbindet.<br><br>Ziel war es, die <strong>Authentizität und Leidenschaft</strong> des Handwerks in die digitale Welt zu übersetzen. Von der Bildsprache über die Menüführung bis zum letzten Icon – alles erzählt die Geschichte einer Bäckerei, die Backen noch als Kunst versteht.'
+            },
+            zimtzucker: {
+                tag: 'Gastronomie',
+                title: 'Zimt & Zucker',
+                desc: 'Frühstücken wie bei Oma – nur viel schöner. <strong>Zimt & Zucker</strong> ist ein Webdesign-Projekt für ein gemütliches Frühstückscafé, das Wärme und Nostalgie in ein modernes digitales Erlebnis übersetzt.<br><br>Die Gestaltung setzt auf <strong>warme Farbtöne, appetitliche Bildsprache</strong> und eine einladende Typografie, die sofort Lust auf den ersten Kaffee des Tages macht.'
+            },
+            zimtliebe: {
+                tag: 'Gastronomie',
+                title: 'Zimt & Liebe',
+                desc: 'Ein gemütliches Wohnzimmer mitten in der Stadt. <strong>Zimt & Liebe</strong> erweitert das Konzept des Stammcafés und bringt das Gefühl von Geborgenheit ins Web.<br><br>Mit <strong>sanften Animationen und warmer Farbpalette</strong> entsteht eine digitale Atmosphäre, die zum Verweilen einlädt – genau wie der Laden selbst.'
+            },
+            juni: {
+                tag: 'Branding',
+                title: 'Juni Essentials',
+                desc: 'Markenidentität und Webdesign für <strong>moderne Kaffeekultur</strong>. Juni Essentials verbindet minimalistisches Design mit einer starken visuellen Identität.<br><br>Vom Logo über die <strong>Verpackungsgestaltung</strong> bis zur vollständigen Website – ein durchdachtes Branding-Paket, das Qualität und Lifestyle in jedem Pixel kommuniziert.'
+            },
+            juniobjects: {
+                tag: 'E-Commerce',
+                title: 'Objects & Merch',
+                desc: 'Kaffee, Drinks und Accessoires – der <strong>Merchandise-Shop von Juni</strong> bringt die Marke auf die nächste Stufe. Produktfotografie trifft auf sauberes UI Design.<br><br>Ein <strong>klarer, fokussierter Online-Shop</strong>, der die Produkte in den Mittelpunkt stellt und mit wenigen Klicks zum Kauf führt.'
+            },
+            nexus: {
+                tag: 'Luxury',
+                title: 'Nexus Horology',
+                desc: 'Meisterhafte Restaurierung von <strong>mechanischen Uhren</strong>. Die Website von Nexus Horology vermittelt die Präzision und den Wert handwerklicher Perfektion.<br><br>Dunkle Töne, <strong>goldene Akzente und cinematische Detailaufnahmen</strong> schaffen eine Atmosphäre, die den Luxus und die Geschichte jeder einzelnen Uhr erlebbar macht.'
+            },
+            nexusatelier: {
+                tag: 'Luxury',
+                title: 'Nexus Atelier',
+                desc: 'Die Seele der Zeit bewahren – durch <strong>echte Handwerkskunst</strong>. Das Nexus Atelier zeigt den Werkstattbereich und die Menschen hinter der Marke.<br><br>Intime Einblicke in den <strong>Restaurierungsprozess</strong>, kombiniert mit einer ruhigen, eleganten Bildsprache, die Vertrauen und Expertise ausstrahlt.'
+            },
+            dailyritual: {
+                tag: 'Lifestyle',
+                title: 'Daily Ritual',
+                desc: 'Dein täglicher Kaffee – <strong>einfach und unkompliziert</strong>. Daily Ritual ist ein Abo-Service für Kaffeeliebhaber mit einem frischen, minimalistischen Look.<br><br>Die Website setzt auf <strong>klare Strukturen, helle Farben</strong> und eine intuitive User Experience, die den Bestellprozess so smooth wie den ersten Schluck am Morgen macht.'
+            },
+            klangerfinder: {
+                tag: 'Audio Branding',
+                title: 'Klangerfinder',
+                desc: 'Wir machen Marken hörbar. <strong>Kunst trifft Technologie</strong> in diesem Projekt für ein Audio-Branding-Studio, das Klangidentitäten für Unternehmen erschafft.<br><br>Dunkle, <strong>immersive Ästhetik</strong> mit Wellenform-Animationen und Sound-Visualisierungen schaffen ein Erlebnis, das man förmlich hören kann – noch bevor man auf Play drückt.'
+            },
+            silentluxury: {
+                tag: 'Fashion',
+                title: 'Silent Luxury',
+                desc: 'Hochwertige Mode für deinen Alltag. <strong>Silent Luxury</strong> steht für zurückhaltende Eleganz – Mode, die nicht schreit, sondern flüstert.<br><br>Das Webdesign spiegelt diesen Ansatz wider: <strong>Großzügige Weißräume, edle Typografie</strong> und eine reduzierte Farbpalette, die den Fokus vollständig auf die Kollektion lenkt.'
+            },
+            portfolio: {
+                tag: 'Personal',
+                title: 'Vorangegangenes Portfolio',
+                desc: 'Mein früheres Portfolio – <strong>spezialisiert auf modernes Webdesign</strong>. Dieses Projekt zeigt die Entwicklung meiner gestalterischen Handschrift über die Zeit.<br><br>Von den ersten Entwürfen bis zum finalen Design: Ein Rückblick auf <strong>Projekte, Learnings und den kreativen Prozess</strong>, der mich zu dem Designer gemacht hat, der ich heute bin.'
+            }
+        };
+
+        const overlay = document.getElementById('projectModalOverlay');
+        const modalTag = document.getElementById('modalTag');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        // Öffnen
+        document.querySelectorAll('[data-modal]').forEach(card => {
+            card.addEventListener('click', () => {
+                const key = card.getAttribute('data-modal');
+                const data = modalData[key];
+                if (!data) return;
+
+                modalTag.textContent = data.tag;
+                modalTitle.textContent = data.title;
+                modalDesc.innerHTML = data.desc;
+
+                overlay.classList.add('is-open');
+                document.body.classList.add('modal-open');
+                modalCloseBtn.focus();
+            });
+
+            // Enter/Space für Tastaturnutzer
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
+        });
+
+        // Schließen
+        function closeModal() {
+            overlay.classList.remove('is-open');
+            document.body.classList.remove('modal-open');
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        // Backdrop-Klick schließt Modal
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal();
+        });
+
+        // Escape-Taste schließt Modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
     </script>
+
 </body>
 
 </html>
