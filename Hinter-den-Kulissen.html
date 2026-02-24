@@ -21,7 +21,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
-        /* Basis Setup & Fonts (Exakt wie auf der Startseite) */
+        /* Basis Setup & Fonts */
         html,
         body {
             font-family: 'Inter', sans-serif;
@@ -146,7 +146,7 @@
             filter: blur(0);
         }
 
-        /* Medien Container Styling (aus Hauptseite übernommen) */
+        /* Medien Container Styling */
         .project-media-container {
             overflow: hidden;
             border-radius: 1.25rem;
@@ -170,8 +170,6 @@
         .project-media-container:hover .process-img {
             transform: scale(1.05);
         }
-
-        /* Farbfelder für Styleguide (Klasse kann entfernt werden, wir nutzen jetzt Tailwind-Utilities) */
 
         /* Prozess-Linie für Desktop */
         @media (min-width: 768px) {
@@ -276,7 +274,7 @@
             <div class="reveal anim-scale-up project-media-container aspect-video w-full bg-[#111]">
                 <!-- Platzhalter für ein großes Hero-Bild des Projekts -->
                 <div
-                    class="absolute inset-0 flex items-center justify-center text-gray-700 font-display text-2xl md:text-4xl opacity-50">
+                    class="absolute inset-0 flex items-center justify-center text-gray-700 font-display text-2xl md:text-4xl opacity-50 text-center p-4">
                     Finales Projekt Mockup (Video / Bild)
                 </div>
             </div>
@@ -332,7 +330,7 @@
                         class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-6 md:p-8 flex flex-col justify-center">
                         <h4 class="font-display text-xl text-white mb-8 text-center">Styleguide Preview</h4>
 
-                        <!-- 100% verlässliche Tailwind-Größen für die Farbfelder -->
+                        <!-- Responsive Tailwind-Größen für die Farbfelder -->
                         <div class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 mb-10">
                             <div
                                 class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-[#050505] border border-white/10 shadow-lg flex-shrink-0">
@@ -406,21 +404,24 @@
                     </p>
                 </div>
                 <div class="w-full md:w-1/2">
+                    <!-- Optimiert mit overflow-x-auto, damit langer Code auf Mobile nicht aus dem Kasten springt -->
                     <div
-                        class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-8 flex flex-col justify-center font-mono text-sm text-blue-400/80">
-                        <p class="mb-2"><span class="text-pink-500">const</span> <span
-                                class="text-yellow-300">revealElements</span> = document.<span
-                                class="text-blue-300">querySelectorAll</span>(<span
-                                class="text-green-400">'.reveal'</span>);</p>
-                        <p class="mb-2"><span class="text-pink-500">const</span> <span
-                                class="text-yellow-300">observer</span> = <span class="text-pink-500">new</span> <span
-                                class="text-blue-300">IntersectionObserver</span>((entries) => {</p>
-                        <p class="mb-2 ml-4">entries.<span class="text-blue-300">forEach</span>(entry => {</p>
-                        <p class="mb-2 ml-8"><span class="text-pink-500">if</span> (entry.isIntersecting) {</p>
-                        <p class="mb-2 ml-12 text-white">entry.target.classList.add('active');</p>
-                        <p class="mb-2 ml-8">}</p>
-                        <p class="mb-2 ml-4">});</p>
-                        <p>});</p>
+                        class="project-media-container aspect-[4/3] bg-[#0a0a0a] border border-neutral-800 p-8 flex flex-col justify-center font-mono text-sm text-blue-400/80 overflow-x-auto">
+                        <div class="min-w-max">
+                            <p class="mb-2"><span class="text-pink-500">const</span> <span
+                                    class="text-yellow-300">revealElements</span> = document.<span
+                                    class="text-blue-300">querySelectorAll</span>(<span
+                                    class="text-green-400">'.reveal'</span>);</p>
+                            <p class="mb-2"><span class="text-pink-500">const</span> <span
+                                    class="text-yellow-300">observer</span> = <span class="text-pink-500">new</span>
+                                <span class="text-blue-300">IntersectionObserver</span>((entries) => {</p>
+                            <p class="mb-2 ml-4">entries.<span class="text-blue-300">forEach</span>(entry => {</p>
+                            <p class="mb-2 ml-8"><span class="text-pink-500">if</span> (entry.isIntersecting) {</p>
+                            <p class="mb-2 ml-12 text-white">entry.target.classList.add('active');</p>
+                            <p class="mb-2 ml-8">}</p>
+                            <p class="mb-2 ml-4">});</p>
+                            <p>});</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -454,9 +455,10 @@
             <p class="text-blue-400 mb-8 uppercase tracking-widest text-sm font-medium">Lust auf ein gemeinsames
                 Projekt?</p>
 
+            <!-- Textgrößen optimiert, um seitliches Scrollen auf Mobile zu vermeiden -->
             <a href="mailto:bisimaik@gmail.com" class="cursor-hover group inline-block">
                 <span
-                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-[6vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
                     Lass uns sprechen.
                 </span>
                 <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500"
@@ -483,89 +485,100 @@
 
     <!-- JavaScript (Cursor & Scroll Reveal) -->
     <script>
-        // Custom Cursor Logik
-        const cursor = document.getElementById('cursor');
-        const hoverElements = document.querySelectorAll('.cursor-hover, a, button');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Custom Cursor Logik
+            const cursor = document.getElementById('cursor');
+            const hoverElements = document.querySelectorAll('.cursor-hover, a, button');
 
-        document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768) {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            }
-        });
-
-        hoverElements.forEach(elem => {
-            elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-            elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-        });
-
-        // --- Mobile Menu Logik ---
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        let isMenuOpen = false;
-
-        function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
-                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
-                menuIcon.classList.remove('ph-list');
-                menuIcon.classList.add('ph-x');
-                document.body.style.overflow = 'hidden';
-
-                // Animation für Links starten
-                setTimeout(() => {
-                    mobileLinks.forEach(link => {
-                        link.classList.remove('opacity-0', 'translate-y-4');
-                        link.classList.add('opacity-100', 'translate-y-0');
-                    });
-                }, 100);
-            } else {
-                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
-                menuIcon.classList.remove('ph-x');
-                menuIcon.classList.add('ph-list');
-                document.body.style.overflow = '';
-
-                // Animation für Links zurücksetzen
-                mobileLinks.forEach(link => {
-                    link.classList.add('opacity-0', 'translate-y-4');
-                    link.classList.remove('opacity-100', 'translate-y-0');
-                });
-            }
-        }
-
-        mobileMenuToggle.addEventListener('click', toggleMenu);
-
-        // Menü schließen, wenn ein Link geklickt wird
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (isMenuOpen) toggleMenu();
-            });
-        });
-
-
-        // Scroll Reveal Animationen
-        const revealElements = document.querySelectorAll('.reveal');
-
-        const revealOptions = {
-            threshold: 0.15,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealOnScroll = new IntersectionObserver(function (entries, observer) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
+            document.addEventListener('mousemove', (e) => {
+                if (window.innerWidth > 768) {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
                 }
             });
-        }, revealOptions);
 
-        revealElements.forEach(el => {
-            revealOnScroll.observe(el);
+            hoverElements.forEach(elem => {
+                elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+
+            // --- Mobile Menu Logik ---
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                    mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                    menuIcon.classList.remove('ph-list');
+                    menuIcon.classList.add('ph-x');
+                    document.body.style.overflow = 'hidden';
+
+                    // Animation für Links starten
+                    setTimeout(() => {
+                        mobileLinks.forEach(link => {
+                            link.classList.remove('opacity-0', 'translate-y-4');
+                            link.classList.add('opacity-100', 'translate-y-0');
+                        });
+                    }, 100);
+                } else {
+                    mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                    mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                    menuIcon.classList.remove('ph-x');
+                    menuIcon.classList.add('ph-list');
+                    document.body.style.overflow = '';
+
+                    // Animation für Links zurücksetzen
+                    mobileLinks.forEach(link => {
+                        link.classList.add('opacity-0', 'translate-y-4');
+                        link.classList.remove('opacity-100', 'translate-y-0');
+                    });
+                }
+            }
+
+            mobileMenuToggle.addEventListener('click', toggleMenu);
+
+            // Menü schließen, wenn ein Link geklickt wird
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (isMenuOpen) toggleMenu();
+                });
+            });
+
+
+            // Scroll Reveal Animationen
+            const revealElements = document.querySelectorAll('.reveal');
+
+            // Barrierefreiheit: Animation auslösen, wenn ein Nutzer via Tastatur (TAB) fokussiert
+            const handleFocusIn = (e) => {
+                const card = e.target.closest('.reveal');
+                if (card && !card.classList.contains('active')) {
+                    card.classList.add('active');
+                }
+            };
+            document.addEventListener('focusin', handleFocusIn);
+
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => {
+                revealOnScroll.observe(el);
+            });
         });
     </script>
 </body>

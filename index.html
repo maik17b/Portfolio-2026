@@ -111,7 +111,6 @@
             height: 80px;
             background-color: transparent;
             border: 2px solid rgba(96, 165, 250, 0.8);
-            /* Blauer Rahmen beim normalen Hover */
             backdrop-filter: blur(4px);
             mix-blend-mode: normal;
         }
@@ -158,12 +157,11 @@
             filter: blur(0);
         }
 
-        /* NEU: Action Layout Styles */
+        /* Action Layout Styles */
         .project-card {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            /* Wichtig für den 3D Effekt */
             perspective: 1500px;
         }
 
@@ -176,19 +174,15 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            /* Sanfter Übergang, wenn die Maus das Bild verlässt */
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
             transform-style: preserve-3d;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
-        /* Hover Status für die Karten (Action Effect) - Mit dezentem blauen Glow */
         .project-card:hover .project-media-container,
         .project-card:focus-visible .project-media-container {
             box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.15);
-            /* Subtiler blauer Schatten */
             border-color: rgba(96, 165, 250, 0.3);
-            /* Blaue Border Note */
         }
 
         .project-img {
@@ -196,28 +190,24 @@
             width: 100%;
             height: auto;
             object-fit: contain;
-            /* Zoom innerhalb des Containers */
             transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
         }
 
         .project-card:hover .project-img,
         .project-card:focus-visible .project-img {
             transform: scale(1.08);
-            /* Stärkerer Zoom für mehr Action */
         }
 
         /* Text für Hero Projekte (Overlay) */
         .hero-overlay {
             background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
             opacity: 0;
-            /* Komplett unsichtbar ohne Hover */
             transition: opacity 0.5s ease;
         }
 
         .project-card:hover .hero-overlay,
         .project-card:focus-visible .hero-overlay {
             opacity: 1;
-            /* Overlay taucht bei Hover auf */
         }
 
         /* Marquee */
@@ -262,20 +252,10 @@
                 transition: none !important;
             }
 
-            /* Overlay auf Mobile ausblenden – Text wird unterhalb angezeigt */
+            /* Overlay auf Mobile ausblenden – Text wird unterhalb via Tailwind flex angezeigt */
             .hero-overlay {
                 display: none;
             }
-
-            /* Externe Hero-Textblöcke auf Mobile einblenden */
-            .hero-text-below {
-                display: flex !important;
-            }
-        }
-
-        /* Externe Hero-Textblöcke auf Desktop ausblenden */
-        .hero-text-below {
-            display: none;
         }
 
         /* ===== PROJECT MODAL ===== */
@@ -392,8 +372,14 @@
 
         @media (max-width: 640px) {
             .project-modal {
-                padding: 2rem 1.5rem;
+                /* Erhöhtes Top-Padding, damit der X-Button den Text nicht überlappt */
+                padding: 4rem 1.5rem 2rem 1.5rem;
                 border-radius: 1.25rem;
+            }
+
+            .project-modal-close {
+                top: 1rem;
+                right: 1rem;
             }
 
             .project-modal-title {
@@ -471,7 +457,6 @@
 
     <!-- HERO SECTION -->
     <header class="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <!-- Angepasste Blue-Blobs -->
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -z-10 animate-pulse"
             aria-hidden="true"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-900/30 rounded-full blur-[100px] -z-10 animate-pulse"
@@ -482,6 +467,7 @@
             <div class="reveal z-10 w-full md:w-3/5">
                 <p class="text-blue-400 uppercase tracking-[0.3em] mb-4 text-xs md:text-base font-medium">Portfolio 2026
                 </p>
+                <!-- Text Size ist hier optimal, da BECKER bei 15vw gut ins Layout passt -->
                 <h1
                     class="text-[15vw] md:text-[8vw] font-display font-bold leading-[0.9] md:leading-[0.85] tracking-tighter mb-6">
                     MAIK <br>
@@ -551,10 +537,10 @@
                         aus den Bereichen Webdesign und Künstliche Intelligenz.</p>
                 </div>
 
-                <!-- Neues Action Grid - Einheitliche Abstände und saubere Reihen -->
+                <!-- Action Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-y-16 md:gap-y-24 gap-x-8 md:gap-x-12">
 
-                    <!-- HERO 1: GreenNest Video (Row 1) -->
+                    <!-- HERO 1: GreenNest Video -->
                     <div data-modal="greennest" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-scale-up md:col-span-12 cursor-hover group"
                         aria-label="Projektdetails öffnen: GreenNest Living">
@@ -576,9 +562,9 @@
                                     modernen E-Commerce Erlebnis.</p>
                             </div>
                         </div>
-                        <!-- Mobile: Text unterhalb der Karte -->
+                        <!-- Mobile: Text unterhalb der Karte (flex md:hidden stat CSS override) -->
                         <div
-                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            class="flex md:hidden mt-5 flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
                             <h3
                                 class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
                                 GreenNest Living</h3>
@@ -587,7 +573,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Zimt & Zucker (Row 2 - Left) -->
+                    <!-- Zimt & Zucker -->
                     <div data-modal="zimtzucker" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-from-left md:col-span-7 cursor-hover group"
                         aria-label="Projektdetails öffnen: Zimt & Zucker">
@@ -604,7 +590,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Zimt & Liebe (Row 2 - Right) -->
+                    <!-- Zimt & Liebe -->
                     <div data-modal="zimtliebe" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-from-right md:col-span-5 cursor-hover group"
                         aria-label="Projektdetails öffnen: Zimt & Liebe">
@@ -621,7 +607,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Juni Essentials (Row 3 - Left) -->
+                    <!-- Juni Essentials -->
                     <div data-modal="juni" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-blur-in md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Juni Essentials">
@@ -638,7 +624,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Juni Objects (Row 3 - Right) -->
+                    <!-- Juni Objects -->
                     <div data-modal="juniobjects" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-scale-up md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Juni Objects & Merch">
@@ -655,7 +641,7 @@
                         </div>
                     </div>
 
-                    <!-- HERO 2: Apex Customs Video (Row 4) -->
+                    <!-- HERO 2: Apex Customs -->
                     <div data-modal="apex" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-flip-up md:col-span-12 cursor-hover group"
                         aria-label="Projektdetails öffnen: Apex Customs">
@@ -679,7 +665,7 @@
                         </div>
                         <!-- Mobile: Text unterhalb der Karte -->
                         <div
-                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            class="flex md:hidden mt-5 flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
                             <h3
                                 class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
                                 Apex Customs</h3>
@@ -688,7 +674,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Nexus Horology (Row 5 - Left) -->
+                    <!-- Nexus Horology -->
                     <div data-modal="nexus" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-from-left md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Nexus Horology">
@@ -705,7 +691,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Nexus Atelier (Row 5 - Right) -->
+                    <!-- Nexus Atelier -->
                     <div data-modal="nexusatelier" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-rotate-in md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Nexus Atelier">
@@ -723,7 +709,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Daily Ritual (Row 6 - Left) -->
+                    <!-- Daily Ritual -->
                     <div data-modal="dailyritual" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-scale-up md:col-span-5 cursor-hover group"
                         aria-label="Projektdetails öffnen: Daily Ritual">
@@ -740,7 +726,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Klangerfinder (Row 6 - Right) -->
+                    <!-- Klangerfinder -->
                     <div data-modal="klangerfinder" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-blur-in md:col-span-7 cursor-hover group"
                         aria-label="Projektdetails öffnen: Klangerfinder">
@@ -757,7 +743,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Silent Luxury (Row 7 - Left) -->
+                    <!-- Silent Luxury -->
                     <div data-modal="silentluxury" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-from-left md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Silent Luxury">
@@ -773,7 +759,7 @@
                         </div>
                     </div>
 
-                    <!-- Standard Card: Portfolio (Row 7 - Right) -->
+                    <!-- Portfolio -->
                     <div data-modal="portfolio" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-from-right md:col-span-6 cursor-hover group"
                         aria-label="Projektdetails öffnen: Mein Portfolio">
@@ -790,7 +776,7 @@
                         </div>
                     </div>
 
-                    <!-- HERO 3: FrechDax Video (Row 8) -->
+                    <!-- HERO 3: FrechDax -->
                     <div data-modal="frechdax" role="button" tabindex="0"
                         class="project-card tilt-card block reveal anim-scale-up md:col-span-12 cursor-hover group"
                         aria-label="Projektdetails öffnen: FrechDax Bäckerei">
@@ -814,7 +800,7 @@
                         </div>
                         <!-- Mobile: Text unterhalb der Karte -->
                         <div
-                            class="hero-text-below flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
+                            class="flex md:hidden mt-5 flex-col gap-2 group-hover:translate-x-2 transition-transform duration-500">
                             <h3
                                 class="text-3xl font-display font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
                                 FrechDax</h3>
@@ -909,19 +895,18 @@
             <p class="text-blue-400 mb-8 uppercase tracking-widest text-sm font-medium" id="contact-heading">Lust auf
                 ein gemeinsames Projekt?</p>
 
-            <!-- E-Mail Update & Optimierter Call-to-Action Look -->
+            <!-- Optimierte Textgröße, die auf Mobile nicht mehr aus dem Bildschirm herausbricht -->
             <a href="mailto:bisimaik@gmail.com" class="cursor-hover group inline-block"
                 aria-label="Schreibe mir eine E-Mail an bisimaik@gmail.com">
 
                 <span
-                    class="text-[10vw] md:text-[8vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-[6vw] font-display font-bold leading-none tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500 block">
                     Lass uns sprechen.
                 </span>
 
                 <div class="w-full h-[2px] bg-gray-800 mt-4 group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-blue-600 transition-all duration-500"
                     aria-hidden="true"></div>
 
-                <!-- Extra Hinweis für absolute Klarheit -->
                 <p
                     class="mt-6 text-gray-500 font-medium group-hover:text-blue-300 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
                     <i class="ph ph-envelope-simple text-lg"></i> Klicke hier, um mir direkt eine E-Mail zu schreiben
@@ -932,7 +917,6 @@
                 <a href="tel:+4915100000000" class="hover:text-blue-400 transition-colors cursor-hover"
                     aria-label="Ruf mich an unter +49 151 000 00 000">+49 (0) 151 000 00 000</a>
                 <span class="hidden md:inline text-gray-700" aria-hidden="true">|</span>
-                <!-- E-Mail Update: Sichtbarer Text unten -->
                 <a href="mailto:bisimaik@gmail.com" class="hover:text-blue-400 transition-colors cursor-hover"
                     aria-label="Sende eine E-Mail an bisimaik@gmail.com">bisimaik@gmail.com</a>
             </div>
@@ -959,249 +943,252 @@
 
     <!-- JavaScript -->
     <script>
-        // 1. Custom Cursor Logik
-        const cursor = document.getElementById('cursor');
-        const hoverElements = document.querySelectorAll('.cursor-hover, a');
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Custom Cursor Logik
+            const cursor = document.getElementById('cursor');
+            const hoverElements = document.querySelectorAll('.cursor-hover, a, button, [role="button"]');
 
-        document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768) {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            }
-        });
-
-        // Standard Hover
-        hoverElements.forEach(elem => {
-            elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-            elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-        });
-
-        // 2. 3D Tilt Effekt für die Action-Cards (Nur auf Desktop)
-        const tiltCards = document.querySelectorAll('.tilt-card');
-
-        tiltCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                if (window.innerWidth <= 768) return; // Auf Mobile deaktivieren
-
-                const container = card.querySelector('.project-media-container');
-                if (!container) return;
-
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left; // X Position in der Karte
-                const y = e.clientY - rect.top;  // Y Position in der Karte
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                // Berechnung der Rotation (Maximal 5-8 Grad)
-                const rotateX = ((y - centerY) / centerY) * -6;
-                const rotateY = ((x - centerX) / centerX) * 6;
-
-                // Sanftes Anwenden der Rotation und des leichten Zooms
-                container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            // Zurücksetzen, wenn die Maus das Bild verlässt
-            card.addEventListener('mouseleave', () => {
-                const container = card.querySelector('.project-media-container');
-                if (container) {
-                    container.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            document.addEventListener('mousemove', (e) => {
+                if (window.innerWidth > 768) {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
                 }
             });
-        });
 
-        // 3. Scroll Reveal Animationen
-        const revealElements = document.querySelectorAll('.reveal');
-
-        const handleFocusIn = (e) => {
-            const card = e.target.closest('.reveal');
-            if (card && !card.classList.contains('active')) {
-                card.classList.add('active');
-            }
-        };
-        document.addEventListener('focusin', handleFocusIn);
-
-        const revealOptions = {
-            threshold: 0.15,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealOnScroll = new IntersectionObserver(function (entries, observer) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, revealOptions);
-
-        revealElements.forEach(el => {
-            revealOnScroll.observe(el);
-        });
-        // ===== PROJECT MODAL LOGIC =====
-        const modalData = {
-            greennest: {
-                tag: 'Case Study',
-                title: 'GreenNest Living',
-                desc: 'Ein vollständiges <strong>E-Commerce-Erlebnis</strong> für nachhaltige Einrichtung. Vom Branding über UI/UX Design bis zur finalen Webentwicklung – dieses Projekt vereint ästhetisches Design mit umweltbewusstem Konsum.<br><br>Jedes Detail der Benutzeroberfläche wurde darauf ausgelegt, die Werte der Marke widerzuspiegeln: <strong>Natürlichkeit, Klarheit und Nachhaltigkeit.</strong> Warme Erdtöne und organische Formen schaffen ein Einkaufserlebnis, das sich bewusst von klassischen Online-Shops abhebt.'
-            },
-            apex: {
-                tag: 'Performance',
-                title: 'Apex Customs',
-                desc: 'Performance trifft Individualität. Ein <strong>Showcase für Custom-Rennwagen</strong> mit dynamischem Video-Content, kraftvollem Layout und einer UI, die Geschwindigkeit visuell erlebbar macht.<br><br>Das Design spiegelt die <strong>Kraft und Präzision</strong> der Fahrzeuge wider – mit kontrastreichen Farben, cinematischen Übergängen und einer Typografie, die Adrenalin transportiert. Jedes Element wurde für maximale visuelle Wirkung optimiert.'
-            },
-            frechdax: {
-                tag: 'Tradition',
-                title: 'FrechDax',
-                desc: 'Ein <strong>digitales Erlebnis</strong> für eine Traditionsbäckerei mit über 100 Jahren Geschichte. Warme Farben, handwerkliche Typografie und ein modernes Webdesign, das Tradition und Zukunft verbindet.<br><br>Ziel war es, die <strong>Authentizität und Leidenschaft</strong> des Handwerks in die digitale Welt zu übersetzen. Von der Bildsprache über die Menüführung bis zum letzten Icon – alles erzählt die Geschichte einer Bäckerei, die Backen noch als Kunst versteht.'
-            },
-            zimtzucker: {
-                tag: 'Gastronomie',
-                title: 'Zimt & Zucker',
-                desc: 'Frühstücken wie bei Oma – nur viel schöner. <strong>Zimt & Zucker</strong> ist ein Webdesign-Projekt für ein gemütliches Frühstückscafé, das Wärme und Nostalgie in ein modernes digitales Erlebnis übersetzt.<br><br>Die Gestaltung setzt auf <strong>warme Farbtöne, appetitliche Bildsprache</strong> und eine einladende Typografie, die sofort Lust auf den ersten Kaffee des Tages macht.'
-            },
-            zimtliebe: {
-                tag: 'Gastronomie',
-                title: 'Zimt & Liebe',
-                desc: 'Ein gemütliches Wohnzimmer mitten in der Stadt. <strong>Zimt & Liebe</strong> erweitert das Konzept des Stammcafés und bringt das Gefühl von Geborgenheit ins Web.<br><br>Mit <strong>sanften Animationen und warmer Farbpalette</strong> entsteht eine digitale Atmosphäre, die zum Verweilen einlädt – genau wie der Laden selbst.'
-            },
-            juni: {
-                tag: 'Branding',
-                title: 'Juni Essentials',
-                desc: 'Markenidentität und Webdesign für <strong>moderne Kaffeekultur</strong>. Juni Essentials verbindet minimalistisches Design mit einer starken visuellen Identität.<br><br>Vom Logo über die <strong>Verpackungsgestaltung</strong> bis zur vollständigen Website – ein durchdachtes Branding-Paket, das Qualität und Lifestyle in jedem Pixel kommuniziert.'
-            },
-            juniobjects: {
-                tag: 'E-Commerce',
-                title: 'Objects & Merch',
-                desc: 'Kaffee, Drinks und Accessoires – der <strong>Merchandise-Shop von Juni</strong> bringt die Marke auf die nächste Stufe. Produktfotografie trifft auf sauberes UI Design.<br><br>Ein <strong>klarer, fokussierter Online-Shop</strong>, der die Produkte in den Mittelpunkt stellt und mit wenigen Klicks zum Kauf führt.'
-            },
-            nexus: {
-                tag: 'Luxury',
-                title: 'Nexus Horology',
-                desc: 'Meisterhafte Restaurierung von <strong>mechanischen Uhren</strong>. Die Website von Nexus Horology vermittelt die Präzision und den Wert handwerklicher Perfektion.<br><br>Dunkle Töne, <strong>goldene Akzente und cinematische Detailaufnahmen</strong> schaffen eine Atmosphäre, die den Luxus und die Geschichte jeder einzelnen Uhr erlebbar macht.'
-            },
-            nexusatelier: {
-                tag: 'Luxury',
-                title: 'Nexus Atelier',
-                desc: 'Die Seele der Zeit bewahren – durch <strong>echte Handwerkskunst</strong>. Das Nexus Atelier zeigt den Werkstattbereich und die Menschen hinter der Marke.<br><br>Intime Einblicke in den <strong>Restaurierungsprozess</strong>, kombiniert mit einer ruhigen, eleganten Bildsprache, die Vertrauen und Expertise ausstrahlt.'
-            },
-            dailyritual: {
-                tag: 'Lifestyle',
-                title: 'Daily Ritual',
-                desc: 'Dein täglicher Kaffee – <strong>einfach und unkompliziert</strong>. Daily Ritual ist ein Abo-Service für Kaffeeliebhaber mit einem frischen, minimalistischen Look.<br><br>Die Website setzt auf <strong>klare Strukturen, helle Farben</strong> und eine intuitive User Experience, die den Bestellprozess so smooth wie den ersten Schluck am Morgen macht.'
-            },
-            klangerfinder: {
-                tag: 'Audio Branding',
-                title: 'Klangerfinder',
-                desc: 'Wir machen Marken hörbar. <strong>Kunst trifft Technologie</strong> in diesem Projekt für ein Audio-Branding-Studio, das Klangidentitäten für Unternehmen erschafft.<br><br>Dunkle, <strong>immersive Ästhetik</strong> mit Wellenform-Animationen und Sound-Visualisierungen schaffen ein Erlebnis, das man förmlich hören kann – noch bevor man auf Play drückt.'
-            },
-            silentluxury: {
-                tag: 'Fashion',
-                title: 'Silent Luxury',
-                desc: 'Hochwertige Mode für deinen Alltag. <strong>Silent Luxury</strong> steht für zurückhaltende Eleganz – Mode, die nicht schreit, sondern flüstert.<br><br>Das Webdesign spiegelt diesen Ansatz wider: <strong>Großzügige Weißräume, edle Typografie</strong> und eine reduzierte Farbpalette, die den Fokus vollständig auf die Kollektion lenkt.'
-            },
-            portfolio: {
-                tag: 'Personal',
-                title: 'Vorangegangenes Portfolio',
-                desc: 'Mein früheres Portfolio – <strong>spezialisiert auf modernes Webdesign</strong>. Dieses Projekt zeigt die Entwicklung meiner gestalterischen Handschrift über die Zeit.<br><br>Von den ersten Entwürfen bis zum finalen Design: Ein Rückblick auf <strong>Projekte, Learnings und den kreativen Prozess</strong>, der mich zu dem Designer gemacht hat, der ich heute bin.'
-            }
-        };
-
-        const overlay = document.getElementById('projectModalOverlay');
-        const modalTag = document.getElementById('modalTag');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDesc = document.getElementById('modalDesc');
-        const modalCloseBtn = document.getElementById('modalCloseBtn');
-
-        // Öffnen
-        document.querySelectorAll('[data-modal]').forEach(card => {
-            card.addEventListener('click', () => {
-                const key = card.getAttribute('data-modal');
-                const data = modalData[key];
-                if (!data) return;
-
-                modalTag.textContent = data.tag;
-                modalTitle.textContent = data.title;
-                modalDesc.innerHTML = data.desc;
-
-                overlay.classList.add('is-open');
-                document.body.classList.add('modal-open');
-                modalCloseBtn.focus();
+            // Standard Hover
+            hoverElements.forEach(elem => {
+                elem.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                elem.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
             });
 
-            // Enter/Space für Tastaturnutzer
-            card.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    card.click();
-                }
-            });
-        });
+            // 2. 3D Tilt Effekt für die Action-Cards (Nur auf Desktop)
+            const tiltCards = document.querySelectorAll('.tilt-card');
 
-        // Schließen
-        function closeModal() {
-            overlay.classList.remove('is-open');
-            document.body.classList.remove('modal-open');
-        }
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    if (window.innerWidth <= 768) return; // Auf Mobile deaktivieren
 
-        modalCloseBtn.addEventListener('click', closeModal);
+                    const container = card.querySelector('.project-media-container');
+                    if (!container) return;
 
-        // Backdrop-Klick schließt Modal
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) closeModal();
-        });
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
 
-        // Escape-Taste schließt Modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
-                closeModal();
-            }
-        });
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
 
-        // --- Mobile Menu Logik ---
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        let isMenuOpen = false;
+                    // Berechnung der Rotation (Maximal 5-8 Grad)
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
 
-        function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
-                mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
-                menuIcon.classList.remove('ph-list');
-                menuIcon.classList.add('ph-x');
-                document.body.style.overflow = 'hidden';
-
-                // Animation für Links starten
-                setTimeout(() => {
-                    mobileLinks.forEach(link => {
-                        link.classList.remove('opacity-0', 'translate-y-4');
-                        link.classList.add('opacity-100', 'translate-y-0');
-                    });
-                }, 100);
-            } else {
-                mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
-                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
-                menuIcon.classList.remove('ph-x');
-                menuIcon.classList.add('ph-list');
-                document.body.style.overflow = '';
-
-                // Animation für Links zurücksetzen
-                mobileLinks.forEach(link => {
-                    link.classList.add('opacity-0', 'translate-y-4');
-                    link.classList.remove('opacity-100', 'translate-y-0');
+                    // Sanftes Anwenden der Rotation und des leichten Zooms
+                    container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                 });
+
+                // Zurücksetzen, wenn die Maus das Bild verlässt
+                card.addEventListener('mouseleave', () => {
+                    const container = card.querySelector('.project-media-container');
+                    if (container) {
+                        container.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    }
+                });
+            });
+
+            // 3. Scroll Reveal Animationen
+            const revealElements = document.querySelectorAll('.reveal');
+
+            const handleFocusIn = (e) => {
+                const card = e.target.closest('.reveal');
+                if (card && !card.classList.contains('active')) {
+                    card.classList.add('active');
+                }
+            };
+            document.addEventListener('focusin', handleFocusIn);
+
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => {
+                revealOnScroll.observe(el);
+            });
+
+            // ===== PROJECT MODAL LOGIC =====
+            const modalData = {
+                greennest: {
+                    tag: 'Case Study',
+                    title: 'GreenNest Living',
+                    desc: 'Ein vollständiges <strong>E-Commerce-Erlebnis</strong> für nachhaltige Einrichtung. Vom Branding über UI/UX Design bis zur finalen Webentwicklung – dieses Projekt vereint ästhetisches Design mit umweltbewusstem Konsum.<br><br>Jedes Detail der Benutzeroberfläche wurde darauf ausgelegt, die Werte der Marke widerzuspiegeln: <strong>Natürlichkeit, Klarheit und Nachhaltigkeit.</strong> Warme Erdtöne und organische Formen schaffen ein Einkaufserlebnis, das sich bewusst von klassischen Online-Shops abhebt.'
+                },
+                apex: {
+                    tag: 'Performance',
+                    title: 'Apex Customs',
+                    desc: 'Performance trifft Individualität. Ein <strong>Showcase für Custom-Rennwagen</strong> mit dynamischem Video-Content, kraftvollem Layout und einer UI, die Geschwindigkeit visuell erlebbar macht.<br><br>Das Design spiegelt die <strong>Kraft und Präzision</strong> der Fahrzeuge wider – mit kontrastreichen Farben, cinematischen Übergängen und einer Typografie, die Adrenalin transportiert. Jedes Element wurde für maximale visuelle Wirkung optimiert.'
+                },
+                frechdax: {
+                    tag: 'Tradition',
+                    title: 'FrechDax',
+                    desc: 'Ein <strong>digitales Erlebnis</strong> für eine Traditionsbäckerei mit über 100 Jahren Geschichte. Warme Farben, handwerkliche Typografie und ein modernes Webdesign, das Tradition und Zukunft verbindet.<br><br>Ziel war es, die <strong>Authentizität und Leidenschaft</strong> des Handwerks in die digitale Welt zu übersetzen. Von der Bildsprache über die Menüführung bis zum letzten Icon – alles erzählt die Geschichte einer Bäckerei, die Backen noch als Kunst versteht.'
+                },
+                zimtzucker: {
+                    tag: 'Gastronomie',
+                    title: 'Zimt & Zucker',
+                    desc: 'Frühstücken wie bei Oma – nur viel schöner. <strong>Zimt & Zucker</strong> ist ein Webdesign-Projekt für ein gemütliches Frühstückscafé, das Wärme und Nostalgie in ein modernes digitales Erlebnis übersetzt.<br><br>Die Gestaltung setzt auf <strong>warme Farbtöne, appetitliche Bildsprache</strong> und eine einladende Typografie, die sofort Lust auf den ersten Kaffee des Tages macht.'
+                },
+                zimtliebe: {
+                    tag: 'Gastronomie',
+                    title: 'Zimt & Liebe',
+                    desc: 'Ein gemütliches Wohnzimmer mitten in der Stadt. <strong>Zimt & Liebe</strong> erweitert das Konzept des Stammcafés und bringt das Gefühl von Geborgenheit ins Web.<br><br>Mit <strong>sanften Animationen und warmer Farbpalette</strong> entsteht eine digitale Atmosphäre, die zum Verweilen einlädt – genau wie der Laden selbst.'
+                },
+                juni: {
+                    tag: 'Branding',
+                    title: 'Juni Essentials',
+                    desc: 'Markenidentität und Webdesign für <strong>moderne Kaffeekultur</strong>. Juni Essentials verbindet minimalistisches Design mit einer starken visuellen Identität.<br><br>Vom Logo über die <strong>Verpackungsgestaltung</strong> bis zur vollständigen Website – ein durchdachtes Branding-Paket, das Qualität und Lifestyle in jedem Pixel kommuniziert.'
+                },
+                juniobjects: {
+                    tag: 'E-Commerce',
+                    title: 'Objects & Merch',
+                    desc: 'Kaffee, Drinks und Accessoires – der <strong>Merchandise-Shop von Juni</strong> bringt die Marke auf die nächste Stufe. Produktfotografie trifft auf sauberes UI Design.<br><br>Ein <strong>klarer, fokussierter Online-Shop</strong>, der die Produkte in den Mittelpunkt stellt und mit wenigen Klicks zum Kauf führt.'
+                },
+                nexus: {
+                    tag: 'Luxury',
+                    title: 'Nexus Horology',
+                    desc: 'Meisterhafte Restaurierung von <strong>mechanischen Uhren</strong>. Die Website von Nexus Horology vermittelt die Präzision und den Wert handwerklicher Perfektion.<br><br>Dunkle Töne, <strong>goldene Akzente und cinematische Detailaufnahmen</strong> schaffen eine Atmosphäre, die den Luxus und die Geschichte jeder einzelnen Uhr erlebbar macht.'
+                },
+                nexusatelier: {
+                    tag: 'Luxury',
+                    title: 'Nexus Atelier',
+                    desc: 'Die Seele der Zeit bewahren – durch <strong>echte Handwerkskunst</strong>. Das Nexus Atelier zeigt den Werkstattbereich und die Menschen hinter der Marke.<br><br>Intime Einblicke in den <strong>Restaurierungsprozess</strong>, kombiniert mit einer ruhigen, eleganten Bildsprache, die Vertrauen und Expertise ausstrahlt.'
+                },
+                dailyritual: {
+                    tag: 'Lifestyle',
+                    title: 'Daily Ritual',
+                    desc: 'Dein täglicher Kaffee – <strong>einfach und unkompliziert</strong>. Daily Ritual ist ein Abo-Service für Kaffeeliebhaber mit einem frischen, minimalistischen Look.<br><br>Die Website setzt auf <strong>klare Strukturen, helle Farben</strong> und eine intuitive User Experience, die den Bestellprozess so smooth wie den ersten Schluck am Morgen macht.'
+                },
+                klangerfinder: {
+                    tag: 'Audio Branding',
+                    title: 'Klangerfinder',
+                    desc: 'Wir machen Marken hörbar. <strong>Kunst trifft Technologie</strong> in diesem Projekt für ein Audio-Branding-Studio, das Klangidentitäten für Unternehmen erschafft.<br><br>Dunkle, <strong>immersive Ästhetik</strong> mit Wellenform-Animationen und Sound-Visualisierungen schaffen ein Erlebnis, das man förmlich hören kann – noch bevor man auf Play drückt.'
+                },
+                silentluxury: {
+                    tag: 'Fashion',
+                    title: 'Silent Luxury',
+                    desc: 'Hochwertige Mode für deinen Alltag. <strong>Silent Luxury</strong> steht für zurückhaltende Eleganz – Mode, die nicht schreit, sondern flüstert.<br><br>Das Webdesign spiegelt diesen Ansatz wider: <strong>Großzügige Weißräume, edle Typografie</strong> und eine reduzierte Farbpalette, die den Fokus vollständig auf die Kollektion lenkt.'
+                },
+                portfolio: {
+                    tag: 'Personal',
+                    title: 'Vorangegangenes Portfolio',
+                    desc: 'Mein früheres Portfolio – <strong>spezialisiert auf modernes Webdesign</strong>. Dieses Projekt zeigt die Entwicklung meiner gestalterischen Handschrift über die Zeit.<br><br>Von den ersten Entwürfen bis zum finalen Design: Ein Rückblick auf <strong>Projekte, Learnings und den kreativen Prozess</strong>, der mich zu dem Designer gemacht hat, der ich heute bin.'
+                }
+            };
+
+            const overlay = document.getElementById('projectModalOverlay');
+            const modalTag = document.getElementById('modalTag');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+            // Öffnen
+            document.querySelectorAll('[data-modal]').forEach(card => {
+                card.addEventListener('click', () => {
+                    const key = card.getAttribute('data-modal');
+                    const data = modalData[key];
+                    if (!data) return;
+
+                    modalTag.textContent = data.tag;
+                    modalTitle.textContent = data.title;
+                    modalDesc.innerHTML = data.desc;
+
+                    overlay.classList.add('is-open');
+                    document.body.classList.add('modal-open');
+                    modalCloseBtn.focus();
+                });
+
+                // Enter/Space für Tastaturnutzer
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            // Schließen
+            function closeModal() {
+                overlay.classList.remove('is-open');
+                document.body.classList.remove('modal-open');
             }
-        }
 
-        mobileMenuToggle.addEventListener('click', toggleMenu);
+            modalCloseBtn.addEventListener('click', closeModal);
 
-        // Menü schließen, wenn ein Link geklickt wird
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (isMenuOpen) toggleMenu();
+            // Backdrop-Klick schließt Modal
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal();
+            });
+
+            // Escape-Taste schließt Modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
+                    closeModal();
+                }
+            });
+
+            // --- Mobile Menu Logik ---
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                    mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+                    menuIcon.classList.remove('ph-list');
+                    menuIcon.classList.add('ph-x');
+                    document.body.style.overflow = 'hidden';
+
+                    // Animation für Links starten
+                    setTimeout(() => {
+                        mobileLinks.forEach(link => {
+                            link.classList.remove('opacity-0', 'translate-y-4');
+                            link.classList.add('opacity-100', 'translate-y-0');
+                        });
+                    }, 100);
+                } else {
+                    mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+                    mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                    menuIcon.classList.remove('ph-x');
+                    menuIcon.classList.add('ph-list');
+                    document.body.style.overflow = '';
+
+                    // Animation für Links zurücksetzen
+                    mobileLinks.forEach(link => {
+                        link.classList.add('opacity-0', 'translate-y-4');
+                        link.classList.remove('opacity-100', 'translate-y-0');
+                    });
+                }
+            }
+
+            mobileMenuToggle.addEventListener('click', toggleMenu);
+
+            // Menü schließen, wenn ein Link geklickt wird
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (isMenuOpen) toggleMenu();
+                });
             });
         });
     </script>
